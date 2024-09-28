@@ -1,0 +1,7 @@
+<Project>
+   <PropertyGroup>
+    <AssemblyName>Vulpes.Zinc.$(MSBuildProjectName)</AssemblyName>
+    <version>1.0.0</version>
+    <RootNamespace>Vulpes.Zinc.$(MSBuildProjectName)</RootNamespace>
+   </PropertyGroup>
+</Project>
