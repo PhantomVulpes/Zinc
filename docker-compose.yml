@@ -1,0 +1,16 @@
+services:
+    mongo:
+        image: mongo:latest
+        container_name: zinc-mongo
+        restart: always
+        hostname: zinc-mongo
+        command: --oplogSize 128 --bind_ip_all --port 60001
+        volumes:
+            - testing-mongo_data:/data/db
+            - testing-mongo_configdb:/data/configdb
+        ports:
+            - "60001:60001"
+
+volumes:
+    testing-mongo_data:
+    testing-mongo_configdb:
