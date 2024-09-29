@@ -7,7 +7,8 @@ public static class MongoConfigurator
     {
         var pack = new ConventionPack()
         {
-            new GuidAsStringConvention()
+            new ConfigureToStringConvention(typeInfo => typeInfo.IsEnum),
+            new ConfigureToStringConvention(typeInfo => typeInfo == typeof(Guid)),
         };
 
         ConventionRegistry.Register("Global MongoDB Conventions", pack, t => true);

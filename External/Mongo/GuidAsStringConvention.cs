@@ -4,12 +4,19 @@ using MongoDB.Bson.Serialization.Conventions;
 using System.Reflection;
 
 namespace Vulpes.Zinc.External.Mongo;
-internal class GuidAsStringConvention : ConventionBase, IMemberMapConvention
+internal class ConfigureToStringConvention : ConventionBase, IMemberMapConvention
 {
+    private readonly Func<TypeInfo, bool> predicate;
+
+    public ConfigureToStringConvention(Func<TypeInfo, bool> predicate)
+    {
+        this.predicate = predicate;
+    }
+
     public void Apply(BsonMemberMap memberMap)
     {
         var memberTypeInfo = memberMap.MemberType.GetTypeInfo();
-        if (memberTypeInfo == typeof(Guid))
+        if (predicate(memberTypeInfo))
         {
             var serializer = memberMap.GetSerializer();
             if (serializer is IRepresentationConfigurable representationConfigurableSerializer)

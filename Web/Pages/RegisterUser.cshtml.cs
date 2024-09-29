@@ -38,6 +38,7 @@ public class RegisterUserModel : PageModel
             Email = EnteredEmail
         };
 
+        // TODO: Not even close to done with this.
         // Verify the email isn't in the database.
         // Post the user.
         await repository.InsertAsync(user);

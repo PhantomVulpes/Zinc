@@ -27,7 +27,6 @@ public static class ApplicationConfiguration
     {
         get
         {
-            return "Zinc";
             var defaultName = ApplicationName;
 #if DEBUG
             return $"{defaultName}-{Environment}";
