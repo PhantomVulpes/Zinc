@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Vulpes.Electrum.Core.Domain.Security;
 using Vulpes.Zinc.Domain.Data;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.External.Mongo;
@@ -13,7 +14,10 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AutoInjectServices(this IServiceCollection services) =>
         // TODO: Obviously this is not auto. Fix that.
-        services.AddTransient<IMongoProvider, MongoProvider>();
+        services
+        .AddTransient<IMongoProvider, MongoProvider>()
+        .AddTransient<IKnoxHasher, KnoxHasher>()
+        ;
 
     private static IServiceCollection InjectRepositories(this IServiceCollection services) => services
         .AddTransient<IDataRepository<ZincUser>, MongoRepository<ZincUser>>()

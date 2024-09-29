@@ -1,0 +1,32 @@
+﻿@page "/register"
+@model Vulpes.Zinc.Web.Pages.RegisterUserModel
+@{
+}
+
+<h1>Register</h1>
+<form method="post">
+    <div class="row">
+        <div class="col">
+            <p>Enter your username:</p>
+            <input type="text" name=@nameof(Model.EnteredUsername) value="@Model.EnteredUsername" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p>Enter your email:</p>
+            <input type="email" name=@nameof(Model.EnteredEmail) value="@Model.EnteredEmail" /te ;tg;et; privat{E getset;e;ts} ;}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p>Enter your password:</p>
+            <input type="password" name=@nameof(Model.EnteredPassword) value="@Model.EnteredPassword" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <input type="submit" class="btn btn-primary" value="Submit" />
+        </div>
+    </div>
+</form>
