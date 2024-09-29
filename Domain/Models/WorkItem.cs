@@ -10,8 +10,8 @@ public record WorkItem : AggregateRoot
 
     public string Title { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
-    public User AssignedTo { get; init; } = User.Empty;
-    public User Reporter { get; init; } = User.Empty;
+    public ZincUser AssignedTo { get; init; } = ZincUser.Empty;
+    public ZincUser Reporter { get; init; } = ZincUser.Empty;
 
     public WorkItemStatus Status { get; init; } = WorkItemStatus.Unknown;
 }

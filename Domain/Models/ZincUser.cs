@@ -1,10 +1,10 @@
 ﻿using Vulpes.Zinc.Domain.Security;
 
 namespace Vulpes.Zinc.Domain.Models;
-public record User : AggregateRoot
+public record ZincUser : AggregateRoot
 {
-    public static User Empty => new();
-    public static User Default { get; } = Empty with
+    public static ZincUser Empty => new();
+    public static ZincUser Default { get; } = Empty with
     {
         Key = Guid.NewGuid(),
         Role = Role.Basic

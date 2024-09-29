@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
+using Vulpes.Electrum.Core.Domain.Extensions;
 using Vulpes.Zinc.Domain.Data;
+using Vulpes.Zinc.Domain.Logging;
 using Vulpes.Zinc.Domain.Models;
 
 namespace Vulpes.Zinc.External.Mongo;
@@ -33,15 +36,16 @@ public class MongoRepository<TAggregateRoot> : IDataRepository<TAggregateRoot>
 
     public Task<TAggregateRoot> GetAsync(Guid key)
     {
-        var result = mongoProvider.GetQuery<TAggregateRoot>(CqrsType.Query).Where(record => record.Key.Equals(key)).WrapFirst();
+        var result = mongoProvider.GetQuery<TAggregateRoot>(CqrsType.Query).Where(record => record.Key.Equals(key)).ConcealFirst();
 
-        return result.UnwrapOrTantrum($"Could not find object {typeof(TAggregateRoot).Name} with key {key}.").FromResult();
+        return result.RevealOrHoax($"Could not find object {typeof(TAggregateRoot).Name} with key {key}.").FromResult();
     }
 
     public async Task InsertAsync(TAggregateRoot record)
     {
         // TODO: Try catch around this.
-        await mongoProvider.GetCollection<TAggregateRoot>(CqrsType.Command).InsertOneAsync(record);
+        var collection = mongoProvider.GetCollection<TAggregateRoot>(CqrsType.Command);
+        await collection.InsertOneAsync(record);
 
         logger.LogDebug($"{LogTags.EntityInserted} Inserted object {typeof(TAggregateRoot).Name}, {record.ToLogName()}.");
     }

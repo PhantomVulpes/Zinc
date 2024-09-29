@@ -82,3 +82,25 @@ public class MongoProvider : IMongoProvider
 
     private void Validate(CommandStartedEvent startEvent) => logger.LogDebug($"{LogTags.UnimplementedMethod} {nameof(Validate)} in {nameof(MongoProvider)} was called but not implemented.");
 }
+
+public class Tester
+{
+    public static void Ping()
+    {
+        var connectionString = "mongodb://localhost:27017";
+        var client = new MongoClient(connectionString);
+
+        try
+        {
+
+            var database = client.GetDatabase("admin");
+            var command = new BsonDocument("ping", 1);
+            var result = database.RunCommand<BsonDocument>(command);
+            Console.WriteLine("MongoDB connection successful: " + result.ToJson());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("MongoDB connection failed: " + ex.Message);
+        }
+    }
+}
