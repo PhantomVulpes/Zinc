@@ -14,6 +14,11 @@ public class Program
 
         // Add services to the container.
         _ = builder.Services.AddRazorPages();
+        _ = builder.Services.AddAuthentication("UserAuthentication")
+            .AddCookie("UserAuthentication", options =>
+            {
+                options.LoginPath = "/Account/Login";
+            });
 
         _ = builder.Services
             .InjectDomain()

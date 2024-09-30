@@ -1,0 +1,25 @@
+﻿@page "/login"
+@model Vulpes.Zinc.Web.Pages.LogInModel
+@{
+}
+
+<form method="post">
+    <div class="row">
+        <div class="col">
+            <p>Username or Email</p>
+            <input type="text" value="@Model.EnteredUsername" name="@nameof(Model.EnteredUsername)" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p>Password</p>
+            <input type="text" value="@Model.EnteredPassword" name="@nameof(Model.EnteredPassword)" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <input type="submit" class="btn btn-primary" value="Log in"/>
+        </div>
+    </div>
+</form>

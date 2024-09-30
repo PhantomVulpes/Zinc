@@ -23,5 +23,7 @@ public static class ServiceCollectionExtensions
         .AddTransient<IDataRepository<ZincUser>, MongoRepository<ZincUser>>()
         .AddTransient<IDataRepository<Project>, MongoRepository<Project>>()
         .AddTransient<IDataRepository<WorkItem>, MongoRepository<WorkItem>>()
+
+        .AddTransient<IQueryProvider<ZincUser>, MongoQueryProvider<ZincUser>>()
         ;
 }

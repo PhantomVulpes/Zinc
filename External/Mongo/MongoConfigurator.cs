@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson.Serialization.Conventions;
+﻿using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Conventions;
+using Vulpes.Zinc.Domain.Models;
 
 namespace Vulpes.Zinc.External.Mongo;
 public static class MongoConfigurator
@@ -12,5 +14,11 @@ public static class MongoConfigurator
         };
 
         ConventionRegistry.Register("Global MongoDB Conventions", pack, t => true);
+
+        _ = BsonClassMap.RegisterClassMap<AggregateRoot>(cm =>
+        {
+            cm.AutoMap();
+            _ = cm.MapIdMember(c => c.Key).SetIdGenerator(MongoDB.Bson.Serialization.IdGenerators.GuidGenerator.Instance);
+        });
     }
 }
