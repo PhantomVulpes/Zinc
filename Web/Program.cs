@@ -1,6 +1,7 @@
 using Vulpes.Zinc.Domain.Extensions;
 using Vulpes.Zinc.External.Extensions;
 using Vulpes.Zinc.External.Mongo;
+using Vulpes.Zinc.Web.Extensions;
 
 namespace Vulpes.Zinc.Web;
 
@@ -23,17 +24,14 @@ public class Program
         _ = builder.Services
             .InjectDomain()
             .InjectExternal()
+            .AddMiddlewareServices()
             ;
 
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        if (!app.Environment.IsDevelopment())
-        {
-            _ = app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            _ = app.UseHsts();
-        }
+        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+        _ = app.UseHsts();
 
         _ = app.UseHttpsRedirection();
         _ = app.UseStaticFiles();
@@ -43,6 +41,11 @@ public class Program
         _ = app.UseAuthorization();
 
         _ = app.MapRazorPages();
+
+        _ = app
+            .UseStatusCodePagesWithReExecute("/StatusPages/{0}")
+            .AddMiddleware()
+            ;
 
         app.Run();
     }
