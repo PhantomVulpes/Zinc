@@ -7,7 +7,7 @@
 }
 
 
-<div class="text-center">
+<div class="row">
     <h1 class="display-4">Welcome</h1>
     @if (string.IsNullOrEmpty(Model.LoggedUsername))
     {
@@ -18,11 +18,16 @@
     else
     {
         <p>Welcome to Zinc, @Model.LoggedUsername!</p>
-        <a href="/log-out">Log Out</a>
-        <a href="/create-project">Create a new project</a>
+        <ul>
+            <li>
+                <a href="/log-out">Log Out</a>
+            </li>
+            <li>
+                <a href="/create-project">Create a new project</a>
+            </li>
+            <li>
+                <a href="/projects">View projects</a>
+            </li>
+        </ul>
     }
-
-    <form method="post">
-        <input type="submit" value="Throw" />
-    </form>
 </div>

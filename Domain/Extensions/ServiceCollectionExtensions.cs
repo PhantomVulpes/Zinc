@@ -27,6 +27,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection InjectQueries(this IServiceCollection services) => services
         .AddTransient<QueryHandler<GetUserByLoginCredentials, ZincUser>, GetUserByLoginCredentialsHandler>()
+        .AddTransient<QueryHandler<GetProjectsForUser, IEnumerable<Project>>, GetProjectsForUserHandler>()
         ;
 
     private static IServiceCollection InjectMediator(this IServiceCollection services)
@@ -41,6 +42,7 @@ public static class ServiceCollectionExtensions
 
             _ = mediator
                 .Register(provider.GetRequiredService<QueryHandler<GetUserByLoginCredentials, ZincUser>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetProjectsForUser, IEnumerable<Project>>>())
                 ;
 
             return mediator;
