@@ -1,14 +1,15 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
+using Vulpes.Electrum.Core.Domain.Extensions;
 using Vulpes.Electrum.Core.Domain.Mediation;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Queries;
+using Vulpes.Zinc.Web.Models;
 
 namespace Vulpes.Zinc.Web.Pages;
 
-public class LogInModel : PageModel
+public class LogInModel : ZincPageModel
 {
     private readonly IMediator mediator;
 
@@ -23,6 +24,10 @@ public class LogInModel : PageModel
     [BindProperty]
     public string EnteredPassword { get; set; } = string.Empty;
 
+    public static readonly string pageTitle = "Log In";
+    public override string PageTitle => pageTitle;
+
+    public override Dictionary<string, string> Breadcrumbs => GetBreadcrumbs();
 
     public async Task<IActionResult> OnPostAsync()
     {
@@ -30,7 +35,6 @@ public class LogInModel : PageModel
         {
             var user = await mediator.RequestResponseAsync<GetUserByLoginCredentials, ZincUser>(new GetUserByLoginCredentials(EnteredUsername, EnteredPassword));
 
-            // Authorize user.
             // Set the user as authenticated
             var claims = new List<Claim>
             {
@@ -43,13 +47,13 @@ public class LogInModel : PageModel
 
             await HttpContext.SignInAsync(principal); // Sign in the user
 
-
             return RedirectToPage("Index");
         }
         catch
         {
             return RedirectToPage("RegisterUser");
         }
-
     }
+
+    public static Dictionary<string, string> GetBreadcrumbs() => IndexModel.GetBreadcrumbs().AddAndReturn(pageTitle, "/log-in");
 }
