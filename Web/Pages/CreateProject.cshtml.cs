@@ -40,9 +40,9 @@ public class CreateProjectModel : SecuredZincPageModel
             .Where(value => !string.IsNullOrEmpty(value))
             ;
 
-        // TODO: Handle errors.
+        // TODO: Handle errors. The form should be reloaded with something to tell the user what went wrong.
         // TODO: Add a message to the user.
-        await mediator.ExecuteCommandAsync(new CreateNewProjectCommand(ProjectName, string.Empty, ProjectDescription, emails, GetZincUserKey()));
+        await mediator.ExecuteCommandAsync(new CreateNewProjectCommand(ProjectName, ProjectShorthand, ProjectDescription, emails, GetZincUserKey()));
 
         return RedirectToPage("/index");    // TODO: These paths need to be kept somewhere.
     }

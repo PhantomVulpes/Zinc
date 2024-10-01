@@ -15,7 +15,6 @@ public class _500Model : ZincPageModel
 
     public override Dictionary<string, string> Breadcrumbs => GetBreadcrumbs(HttpContext);
 
-    // TODO: Why tf is this not loading anymore?
     public void OnGet()
     {
         Exception = HttpContext.Items[KnownExceptionHandling.ExceptionKey]!.ToString()!;
