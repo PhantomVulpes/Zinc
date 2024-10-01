@@ -1,0 +1,14 @@
+﻿@page "/projects"
+@model Vulpes.Zinc.Web.Pages.ProjectsModel
+
+<h1>Projects</h1>
+<ul>
+    @foreach(var project in Model.AccessibleProjects)
+    {
+        <li>
+            <a href="/projects/@project.Shorthand">
+                @project.Name <p class="text-muted small">(@project.Shorthand)</p>
+            </a>
+        </li>
+    }
+</ul>

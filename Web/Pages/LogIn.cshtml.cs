@@ -39,7 +39,8 @@ public class LogInModel : ZincPageModel
             var claims = new List<Claim>
             {
                 new(ClaimTypes.Name, user.Username),
-                // Add any additional claims as needed
+                new(ClaimTypes.NameIdentifier, user.Key.ToString()),
+                new(ClaimTypes.Role, user.Role.ToString())
             };
 
             var identity = new ClaimsIdentity(claims, "UserAuthentication");

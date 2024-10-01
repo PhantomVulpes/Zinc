@@ -7,8 +7,8 @@ namespace Vulpes.Zinc.Web.Pages.StatusPages;
 
 public class _500Model : ZincPageModel
 {
-    public string Exception { get; private set; } = string.Empty;
-    public string Message { get; private set; } = string.Empty;
+    public string Exception { get; private set; } = "ERROR: EXCEPTION NOT LOADED";
+    public string Message { get; private set; } = "ERROR: MESSAGE NOT LOADED";
 
     private static readonly string pageTitle = "500 Error";
     public override string PageTitle => pageTitle;

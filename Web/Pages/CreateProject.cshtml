@@ -1,0 +1,34 @@
+﻿@page "/create-project"
+@model Vulpes.Zinc.Web.Pages.CreateProjectModel
+@{
+}
+
+<h1>Create Project</h1>
+
+<form method="post">
+    <div class="form-group mb-3">
+        <label for="@nameof(Model.ProjectName)">Project Name</label>
+        <input type="text" class="form-control" name="@nameof(Model.ProjectName)" value="@Model.ProjectName" required />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="@nameof(Model.ProjectShorthand)">Project Shorthand Token</label>
+        <input type="text" class="form-control" name="@nameof(Model.ProjectShorthand)" value="@Model.ProjectShorthand" required />
+        <p class="text-muted small">A 4-character shorthand token for your project, used in URLs.</p>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="@nameof(Model.ProjectDescription)">Description</label>
+        <input type="text" class="form-control" name="@nameof(Model.ProjectDescription)" value="@Model.ProjectDescription" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="@nameof(Model.AllowedUserEmails)">Allowed User's Emails</label>
+        <input type="text" class="form-control" name="@nameof(Model.AllowedUserEmails)" value="@Model.AllowedUserEmails" />
+        <p class="text-muted small">Comma separated. You do not need to add your own email.</p>
+    </div>
+
+    <div class="btn-group">
+        <input type="submit" class="btn btn-primary" value="Create Project" />
+    </div>
+</form>
