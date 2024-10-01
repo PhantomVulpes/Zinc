@@ -15,6 +15,7 @@ public class GetProjectByShorthandHandler : QueryHandler<GetProjectByShorthand, 
 
     protected override async Task<Project> InternalRequestAsync(GetProjectByShorthand query)
     {
+        // TODO: Make sure relics are used to return an empty project. Don't think I have the correct extension in Electrum yet.
         var result = (await queryProvider.BeginQueryAsync()).FirstOrDefault(project => project.Shorthand == query.Shorthand.ToUpper());
         return result;
     }
