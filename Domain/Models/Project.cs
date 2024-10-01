@@ -8,6 +8,9 @@ public record Project : AggregateRoot
     };
 
     public string Name { get; init; } = string.Empty;
+    public string Description { get; init; } = string.Empty;
 
     public WorkItemStatus DefaultWorkItemStatus { get; init; } = WorkItemStatus.Unknown;
+
+    public IEnumerable<Guid> AllowedUserKeys { get; init; } = [];
 }
