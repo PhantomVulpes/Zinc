@@ -22,7 +22,10 @@ public class ProjectsModel : SecuredZincPageModel
 
     public IEnumerable<Project> AccessibleProjects { get; private set; } = [];
 
-    public async Task OnGetAsync() => AccessibleProjects = await mediator.RequestResponseAsync<GetProjectsForUser, IEnumerable<Project>>(new GetProjectsForUser(GetZincUserKey()));
+    public async Task OnGetAsync()
+    {
+        AccessibleProjects = await mediator.RequestResponseAsync<GetProjectsForUser, IEnumerable<Project>>(new GetProjectsForUser(GetZincUserKey()));
+    }
 
     public static Dictionary<string, string> GetBreadcrumbs() => IndexModel.GetBreadcrumbs().AddAndReturn(pageTitle, "/projects");
 }
