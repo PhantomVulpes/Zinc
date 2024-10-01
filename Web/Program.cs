@@ -43,8 +43,8 @@ public class Program
         _ = app.MapRazorPages();
 
         _ = app
-            .UseStatusCodePagesWithReExecute("/StatusPages/{0}")
             .AddMiddleware()
+            .UseStatusCodePagesWithReExecute("/StatusPages/{0}")
             ;
 
         app.Run();

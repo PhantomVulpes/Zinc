@@ -8,7 +8,13 @@
 <form method="post">
     <div class="form-group mb-3">
         <label for="@nameof(Model.ProjectName)">Project Name</label>
-        <input type="text" class="form-control" name="@nameof(Model.ProjectName)" value="@Model.ProjectName" required/>
+        <input type="text" class="form-control" name="@nameof(Model.ProjectName)" value="@Model.ProjectName" required />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="@nameof(Model.ProjectShorthand)">Project Shorthand Token</label>
+        <input type="text" class="form-control" name="@nameof(Model.ProjectShorthand)" value="@Model.ProjectShorthand" required />
+        <p class="text-muted small">A 4-character shorthand token for your project, used in URLs.</p>
     </div>
 
     <div class="form-group mb-3">
