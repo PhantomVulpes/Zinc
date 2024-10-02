@@ -15,9 +15,9 @@ public class GetProjectsForUserHandler : QueryHandler<GetProjectsForUser, IEnume
 
     protected override async Task<IEnumerable<Project>> InternalRequestAsync(GetProjectsForUser query) => await RetrieveProjects(queryProvider, query.UserKey);
 
-    public static async Task<IEnumerable<Project>> RetrieveProjects(IQueryProvider<Project> queryProvider, Guid UserKey)
+    public static async Task<IEnumerable<Project>> RetrieveProjects(IQueryProvider<Project> queryProvider, Guid userKey)
     {
-        var projects = (await queryProvider.BeginQueryAsync()).Where(project => project.CreatorKey == UserKey || project.AllowedUserKeys.Contains(UserKey));
+        var projects = (await queryProvider.BeginQueryAsync()).Where(project => project.CreatorKey == userKey || project.AllowedUserKeys.Contains(userKey));
         return projects;
     }
 }
