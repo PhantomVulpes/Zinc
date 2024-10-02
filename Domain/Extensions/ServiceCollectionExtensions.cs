@@ -30,6 +30,7 @@ public static class ServiceCollectionExtensions
         .AddTransient<QueryHandler<GetUserByLoginCredentials, ZincUser>, GetUserByLoginCredentialsHandler>()
         .AddTransient<QueryHandler<GetProjectsForUser, IEnumerable<Project>>, GetProjectsForUserHandler>()
         .AddTransient<QueryHandler<GetProjectByShorthand, Project>, GetProjectByShorthandHandler>()
+        .AddTransient<QueryHandler<GetTicketsUnderProject, IEnumerable<Ticket>>, GetTicketsUnderProjectHandler>()
         ;
 
     private static IServiceCollection InjectMediator(this IServiceCollection services)
@@ -47,6 +48,7 @@ public static class ServiceCollectionExtensions
                 .Register(provider.GetRequiredService<QueryHandler<GetUserByLoginCredentials, ZincUser>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetProjectsForUser, IEnumerable<Project>>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetProjectByShorthand, Project>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetTicketsUnderProject, IEnumerable<Ticket>>>())
                 ;
 
             return mediator;

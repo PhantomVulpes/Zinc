@@ -26,5 +26,6 @@ public static class ServiceCollectionExtensions
 
         .AddTransient<IQueryProvider<ZincUser>, MongoQueryProvider<ZincUser>>()
         .AddTransient<IQueryProvider<Project>, MongoQueryProvider<Project>>()
+        .AddTransient<IQueryProvider<Ticket>, MongoQueryProvider<Ticket>>()
         ;
 }

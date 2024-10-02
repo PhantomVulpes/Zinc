@@ -7,4 +7,22 @@
 <p>Viewing:</p>
 <p>@Model.Project.Name (@Model.Project.Shorthand)</p>
 
-<a href="/projects/@Model.Project.Shorthand/create-ticket" >Create Ticket</a>
+<h1>Tickets</h1>
+@if (Model.Tickets.Any())
+{
+    <ul>
+        @foreach (var ticket in Model.Tickets)
+        {
+            <li>
+                <p>@ticket.Title - @ticket.Status</p>
+                <p class="text-muted small">@ticket.Description</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No tickets under this project.</p>
+}
+
+<a href="/projects/@Model.Project.Shorthand/create-ticket">Create Ticket</a>

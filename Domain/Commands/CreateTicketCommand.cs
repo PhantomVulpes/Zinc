@@ -21,11 +21,13 @@ public class CreateTicketCommandHandler : CommandHandler<CreateTicketCommand>
     protected override async Task InternalExecuteAsync(CreateTicketCommand command)
     {
         var project = (await queryProvider.BeginQueryAsync()).Where(project => project.Key == command.ProjectKey).ConcealFirst().RevealOrHoax();
-        var ticket = Ticket.Default(project) with
+        var ticket = Ticket.Default with
         {
             Title = command.Title,
             Description = command.Description,
             ReporterKey = command.CreatorKey,
+            ProjectKey = project.Key,
+            Status = project.DefaultTicketStatus,
         };
 
         await ticketRepository.InsertAsync(ticket);
