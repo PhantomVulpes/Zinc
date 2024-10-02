@@ -23,12 +23,14 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection InjectCommands(this IServiceCollection services) => services
         .AddTransient<CommandHandler<CreateNewProjectCommand>, CreateNewProjectCommandHandler>()
+        .AddTransient<CommandHandler<CreateTicketCommand>, CreateTicketCommandHandler>()
         ;
 
     private static IServiceCollection InjectQueries(this IServiceCollection services) => services
         .AddTransient<QueryHandler<GetUserByLoginCredentials, ZincUser>, GetUserByLoginCredentialsHandler>()
         .AddTransient<QueryHandler<GetProjectsForUser, IEnumerable<Project>>, GetProjectsForUserHandler>()
         .AddTransient<QueryHandler<GetProjectByShorthand, Project>, GetProjectByShorthandHandler>()
+        .AddTransient<QueryHandler<GetTicketsUnderProject, IEnumerable<Ticket>>, GetTicketsUnderProjectHandler>()
         ;
 
     private static IServiceCollection InjectMediator(this IServiceCollection services)
@@ -39,12 +41,14 @@ public static class ServiceCollectionExtensions
 
             _ = mediator
                 .Register(provider.GetRequiredService<CommandHandler<CreateNewProjectCommand>>())
+                .Register(provider.GetRequiredService<CommandHandler<CreateTicketCommand>>())
                 ;
 
             _ = mediator
                 .Register(provider.GetRequiredService<QueryHandler<GetUserByLoginCredentials, ZincUser>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetProjectsForUser, IEnumerable<Project>>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetProjectByShorthand, Project>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetTicketsUnderProject, IEnumerable<Ticket>>>())
                 ;
 
             return mediator;

@@ -22,9 +22,10 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection InjectRepositories(this IServiceCollection services) => services
         .AddTransient<IDataRepository<ZincUser>, MongoRepository<ZincUser>>()
         .AddTransient<IDataRepository<Project>, MongoRepository<Project>>()
-        .AddTransient<IDataRepository<WorkItem>, MongoRepository<WorkItem>>()
+        .AddTransient<IDataRepository<Ticket>, MongoRepository<Ticket>>()
 
         .AddTransient<IQueryProvider<ZincUser>, MongoQueryProvider<ZincUser>>()
         .AddTransient<IQueryProvider<Project>, MongoQueryProvider<Project>>()
+        .AddTransient<IQueryProvider<Ticket>, MongoQueryProvider<Ticket>>()
         ;
 }

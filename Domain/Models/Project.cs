@@ -7,7 +7,7 @@ public record Project : AggregateRoot
     public static Project Default { get; } = Empty with
     {
         Key = Guid.NewGuid(),
-        DefaultWorkItemStatus = WorkItemStatus.InReview,
+        DefaultTicketStatus = TicketStatus.InReview,
         Status = ProjectStatus.Open,
     };
 
@@ -15,7 +15,7 @@ public record Project : AggregateRoot
     public string Shorthand { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
 
-    public WorkItemStatus DefaultWorkItemStatus { get; init; } = WorkItemStatus.Unknown;
+    public TicketStatus DefaultTicketStatus { get; init; } = TicketStatus.Unknown;
 
     public IEnumerable<Guid> AllowedUserKeys { get; init; } = [];
     public Guid CreatorKey { get; init; } = Guid.Empty;
