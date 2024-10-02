@@ -1,6 +1,6 @@
 ﻿namespace Vulpes.Zinc.Domain.Models;
 
-public enum WorkItemStatus
+public enum TicketStatus
 {
     Unknown,
     InReview,

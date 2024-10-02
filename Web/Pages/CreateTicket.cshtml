@@ -1,0 +1,24 @@
+﻿@page "/projects/{ProjectShorthand}/create-ticket"
+@model Vulpes.Zinc.Web.Pages.CreateTicketModel
+@{
+}
+<h1>Create a New Ticket</h1>
+
+<form method="post">
+    <div class="form-group mb-3">
+        <label for="@nameof(Model.TicketName)">Ticket Name</label>
+        <input type="text" class="form-control" name="@nameof(Model.TicketName)" value="@Model.TicketName" required />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="@nameof(Model.TicketDescription)">Ticket Description</label>
+        <input type="text" class="form-control" name="@nameof(Model.TicketDescription)" value="@Model.TicketDescription" required />
+        <p class="text-muted small">Briefly describe the issue to be solved or feature to be added.</p>
+    </div>
+
+    <div class="btn-group">
+        <input type="submit" class="btn btn-primary" value="Create Ticket" />
+    </div>
+
+    <input type="hidden" name="@nameof(Model.ProjectKey)" value="@Model.ProjectKey" />
+</form>

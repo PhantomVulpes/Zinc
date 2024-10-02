@@ -1,13 +1,14 @@
 ﻿namespace Vulpes.Zinc.Domain.Models;
-public record WorkItem : AggregateRoot
+public record Ticket : AggregateRoot
 {
-    public static WorkItem Empty => new();
-    public static WorkItem Default(Project project) =>
+    // TODO: Add convention for null serialization from database. Changed name of thing from database, now it breaks unless I make a new one.
+    public static Ticket Empty => new();
+    public static Ticket Default(Project project) =>
         Empty with
         {
             Key = Guid.NewGuid(),
             CreatedDate = DateTime.UtcNow,
-            Status = project.DefaultWorkItemStatus,
+            Status = project.DefaultTicketStatus,
         };
 
     public string Title { get; init; } = string.Empty;
@@ -18,14 +19,14 @@ public record WorkItem : AggregateRoot
     public DateTime CreatedDate { get; init; } = DateTime.MinValue;
     public DateTime CompletedDate { get; init; } = DateTime.MinValue;
 
-    public Dictionary<WorkItemRelationship, Guid> WorkItemRelationships { get; init; } = [];
+    public Dictionary<TicketRelationship, Guid> WorkItemRelationships { get; init; } = [];
 
-    public WorkItemStatus Status { get; init; } = WorkItemStatus.Unknown;
+    public TicketStatus Status { get; init; } = TicketStatus.Unknown;
 
     // TODO: Add labels, attachments (requires Duralumin)
 }
 
-public enum WorkItemRelationship
+public enum TicketRelationship
 {
     Unknown,
     DependantOn,
