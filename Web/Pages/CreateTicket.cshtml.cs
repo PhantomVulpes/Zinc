@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Vulpes.Electrum.Core.Domain.Extensions;
 using Vulpes.Electrum.Core.Domain.Mediation;
 using Vulpes.Zinc.Domain.Commands;
+using Vulpes.Zinc.Domain.Data;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Queries;
 using Vulpes.Zinc.Web.Models;
@@ -11,10 +12,12 @@ namespace Vulpes.Zinc.Web.Pages;
 public class CreateTicketModel : SecuredZincPageModel
 {
     private readonly IMediator mediator;
+    private readonly IDataRepository<Project> projectRepository;
 
-    public CreateTicketModel(IMediator mediator)
+    public CreateTicketModel(IMediator mediator, IDataRepository<Project> projectRepository)
     {
         this.mediator = mediator;
+        this.projectRepository = projectRepository;
     }
 
     private readonly static string pageTitle = "Create Ticket";
@@ -40,9 +43,10 @@ public class CreateTicketModel : SecuredZincPageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        await mediator.ExecuteCommandAsync(new CreateTicketCommand(ProjectKey, TicketName, TicketDescription, GetZincUserKey()));
+        Project = await projectRepository.GetAsync(ProjectKey);
+        await mediator.ExecuteCommandAsync(new CreateTicketCommand(Project.Key, TicketName, TicketDescription, GetZincUserKey()));
 
-        return RedirectToPage("/Project", new { ProjectShorthand = Project.Shorthand });
+        return RedirectToPage("Project", new { ProjectShorthand = Project.Shorthand });
     }
 
     public static Dictionary<string, string> GetBreadcrumbs(string projectShorthand) => ProjectModel.GetBreadcrumbs(projectShorthand).AddAndReturn(pageTitle, "/create-work-item");
