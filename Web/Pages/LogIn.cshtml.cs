@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Vulpes.Electrum.Core.Domain.Extensions;
 using Vulpes.Electrum.Core.Domain.Mediation;
+using Vulpes.Zinc.Domain.Logging;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Queries;
 using Vulpes.Zinc.Web.Models;
@@ -12,10 +13,12 @@ namespace Vulpes.Zinc.Web.Pages;
 public class LogInModel : ZincPageModel
 {
     private readonly IMediator mediator;
+    private readonly ILogger<LogInModel> logger;
 
-    public LogInModel(IMediator mediator)
+    public LogInModel(IMediator mediator, ILogger<LogInModel> logger)
     {
         this.mediator = mediator;
+        this.logger = logger;
     }
 
     [BindProperty]
@@ -50,8 +53,9 @@ public class LogInModel : ZincPageModel
 
             return RedirectToPage("Index");
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, $"{LogTags.Failure} Failed to log in user {EnteredUsername}.");
             return RedirectToPage("RegisterUser");
         }
     }

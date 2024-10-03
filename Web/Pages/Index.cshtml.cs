@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Web.Models;
 
 namespace Vulpes.Zinc.Web.Pages;
@@ -12,13 +12,15 @@ public class IndexModel : ZincPageModel
     public override Dictionary<string, string> Breadcrumbs => GetBreadcrumbs();
 
     // TODO: Add logged user to layout with view components.
-    public void OnGet() =>
-        LoggedUsername = HttpContext.User.Identity!.Name!;
-
-    public IActionResult OnPost()
+    public void OnGet()
     {
-        throw new NotImplementedException("Dimma darn");
-        return Page();
+        var defaultUsers = new List<ZincUser>();
+        for (var i = 0; i < 10; i++)
+        {
+            defaultUsers.Add(ZincUser.Default);
+        }
+
+        LoggedUsername = HttpContext.User.Identity!.Name!;
     }
 
     public static Dictionary<string, string> GetBreadcrumbs() => new() { { pageTitle, "/index" } };

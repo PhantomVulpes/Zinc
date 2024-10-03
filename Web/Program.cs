@@ -11,6 +11,12 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        // Ensure Kestrel configuration is applied
+        builder.WebHost.ConfigureKestrel((context, options) =>
+        {
+            options.Configure(context.Configuration.GetSection("Kestrel"));
+        });
+
         MongoConfigurator.Configure();
 
         // Add services to the container.

@@ -4,7 +4,7 @@ namespace Vulpes.Zinc.Domain.Models;
 public record ZincUser : AggregateRoot
 {
     public static ZincUser Empty => new();
-    public static ZincUser Default { get; } = Empty with
+    public static ZincUser Default => Empty with
     {
         Key = Guid.NewGuid(),
         Role = Role.Basic
