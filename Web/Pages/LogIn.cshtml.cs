@@ -6,6 +6,7 @@ using Vulpes.Electrum.Core.Domain.Mediation;
 using Vulpes.Zinc.Domain.Logging;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Queries;
+using Vulpes.Zinc.Web.Middleware;
 using Vulpes.Zinc.Web.Models;
 
 namespace Vulpes.Zinc.Web.Pages;
@@ -55,9 +56,17 @@ public class LogInModel : ZincPageModel
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, $"{LogTags.Failure} Failed to log in user {EnteredUsername}.");
-            return RedirectToPage("RegisterUser");
+            HandleException(HttpContext, ex, StatusCodes.Status500InternalServerError);
+            throw; // rethrow to trigger exception handling middleware
         }
+    }
+
+    private void HandleException(HttpContext context, Exception exception, int status)
+    {
+        context.Response.StatusCode = status;
+        context.Items[KnownExceptionHandling.ExceptionKey] = exception.GetType().Name;
+        context.Items[KnownExceptionHandling.ExceptionMessageKey] = exception.Message;
+        logger.LogInformation($"{LogTags.Failure} Failed to execute request to {context.Request.Path}. {exception.Message}");
     }
 
     public static Dictionary<string, string> GetBreadcrumbs() => IndexModel.GetBreadcrumbs().AddAndReturn(pageTitle, "/log-in");

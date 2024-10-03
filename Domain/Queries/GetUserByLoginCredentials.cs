@@ -23,10 +23,9 @@ public class GetUserByLoginCredentialsHandler : QueryHandler<GetUserByLoginCrede
 
     protected override async Task<ZincUser> InternalRequestAsync(GetUserByLoginCredentials query)
     {
-        var d = await dataRepository.GetAsync(Guid.Parse("6d05a1be-4431-4d2a-84d4-9112afe566b1"));
         var allQuery = (await queryProvider.BeginQueryAsync()).ToList();
         var userRelic = (await queryProvider.BeginQueryAsync())
-            .Where(user => user.Username.ToLower() == query.UsernameOrEmail.ToLower()/* || user.Email.ToLower() == query.UsernameOrEmail.ToLower()*/)
+            .Where(user => user.Username.ToLower() == query.UsernameOrEmail.ToLower() || user.Email.ToLower() == query.UsernameOrEmail.ToLower())
             .ConcealFirst()
             ;
 
