@@ -6,5 +6,5 @@ public enum TicketStatus
     InReview,
     Open,
     InProgress,
-    Done
+    Complete
 }

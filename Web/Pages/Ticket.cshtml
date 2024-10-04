@@ -1,7 +1,47 @@
 ﻿@page "/projects/{projectShorthand}/{ticketKey}"
+@using Vulpes.Zinc.Domain.Models
 @model Vulpes.Zinc.Web.Pages.TicketModel
 @{
 }
 
-<h1>@Model.Ticket.Title</h1>
-<p>@Model.Ticket.Description</p>
+<div class="row">
+    <div class="col">
+        <h1>@Model.Project.Name</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <h1>@Model.Ticket.Title</h1>
+    </div>
+    <div class="col">
+        <p>@Model.Ticket.Status</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <p>@Model.Ticket.Description</p>
+    </div>
+</div>
+
+<form method="post">
+    @foreach(var status in Enum.GetValues<TicketStatus>())
+    {
+        if (status == TicketStatus.Unknown)
+        {
+            continue;
+        }
+
+        if (Model.Ticket.Status == status)
+        {
+            <input type="submit" class="btn btn-danger" asp-for=@Model.NewStatus value="@status.ToString()" disabled />
+            continue;
+        }
+        
+        <input type="submit" class="btn btn-primary" asp-for=@Model.NewStatus value="@status.ToString()" />
+    }
+
+    <input type="hidden" name="@nameof(Model.TicketKey)" value="@Model.TicketKey" />
+    <input type="hidden" name="@nameof(Model.ProjectShorthand)" value="@Model.ProjectShorthand" />
+</form>
