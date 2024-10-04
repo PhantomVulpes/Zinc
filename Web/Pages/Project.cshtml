@@ -14,7 +14,9 @@
         @foreach (var ticket in Model.Tickets)
         {
             <li>
-                <p>@ticket.Title - @ticket.Status</p>
+                <a href="/projects/@Model.Project.Shorthand/@ticket.Key">
+                    <p>@ticket.Title - @ticket.Status</p>
+                </a>
                 <p class="text-muted small">@ticket.Description</p>
             </li>
         }
