@@ -1,7 +1,7 @@
 ﻿namespace Vulpes.Zinc.Web.Routing;
 
-public static class RouteValues
+public record ZincRoute(string PageName, object RouteParameters)
 {
-    public static object Project(string projectShorthand) => new { ProjectShorthand = projectShorthand };
-    public static object Ticket(string projectShorthand, Guid ticketKey) => new { ProjectShorthand = projectShorthand, TicketKey = ticketKey };
+    public static ZincRoute Project(string projectShorthand) => new("Project", new { ProjectShorthand = projectShorthand });
+    public static ZincRoute Ticket(string projectShorthand, Guid ticketKey) => new("Ticket", new { ProjectShorthand = projectShorthand, TicketKey = ticketKey });
 }

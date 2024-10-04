@@ -5,6 +5,7 @@ using Vulpes.Zinc.Domain.Commands;
 using Vulpes.Zinc.Domain.Data;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Queries;
+using Vulpes.Zinc.Web.Extensions;
 using Vulpes.Zinc.Web.Models;
 using Vulpes.Zinc.Web.Routing;
 
@@ -47,7 +48,7 @@ public class CreateTicketModel : SecuredZincPageModel
         Project = await projectRepository.GetAsync(ProjectKey);
         await mediator.ExecuteCommandAsync(new CreateTicketCommand(Project.Key, TicketName, TicketDescription, GetZincUserKey()));
 
-        return RedirectToPage("Project", RouteValues.Project(Project.Shorthand));
+        return this.RedirectWithZincRoutes(ZincRoute.Project(Project.Shorthand));
     }
 
     public static Dictionary<string, string> GetBreadcrumbs(string projectShorthand) => ProjectModel.GetBreadcrumbs(projectShorthand).AddAndReturn(pageTitle, "/create-work-item");
