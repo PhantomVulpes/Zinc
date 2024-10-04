@@ -25,6 +25,7 @@ public static class ServiceCollectionExtensions
         .AddTransient<CommandHandler<CreateNewProjectCommand>, CreateNewProjectCommandHandler>()
         .AddTransient<CommandHandler<CreateTicketCommand>, CreateTicketCommandHandler>()
         .AddTransient<CommandHandler<UpdateTicketStatusCommand>, UpdateTicketStatusCommandHandler>()
+        .AddTransient<CommandHandler<UpdateTicketDescriptionCommand>, UpdateTicketDescriptionCommandHandler>()
         ;
 
     private static IServiceCollection InjectQueries(this IServiceCollection services) => services
@@ -45,6 +46,7 @@ public static class ServiceCollectionExtensions
                 .Register(provider.GetRequiredService<CommandHandler<CreateNewProjectCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<CreateTicketCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<UpdateTicketStatusCommand>>())
+                .Register(provider.GetRequiredService<CommandHandler<UpdateTicketDescriptionCommand>>())
                 ;
 
             _ = mediator

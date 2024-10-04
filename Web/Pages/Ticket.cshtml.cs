@@ -35,20 +35,25 @@ public class TicketModel : SecuredZincPageModel
     [BindProperty]
     public string NewStatus { get; set; } = string.Empty;
 
+    [BindProperty]
+    public string UpdatedDescription { get; set; } = string.Empty;
+
     public async Task OnGetAsync(string projectShorthand, Guid ticketKey)
     {
         ProjectShorthand = projectShorthand;
         TicketKey = ticketKey;
 
         await LoadProperties();
+
+        UpdatedDescription = Ticket.Description;
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var newStatus = Enum.Parse<TicketStatus>(NewStatus);
-        await mediator.ExecuteCommandAsync(new UpdateTicketStatusCommand(TicketKey, newStatus, GetZincUserKey()));
-
         await LoadProperties();
+
+        await UpdateStatus();
+        await mediator.ExecuteCommandAsync(new UpdateTicketDescriptionCommand(TicketKey, UpdatedDescription, GetZincUserKey()));
 
         return this.RedirectWithZincRoutes(ZincRoute.Ticket(Project.Shorthand, Ticket.Key));
     }
@@ -59,5 +64,22 @@ public class TicketModel : SecuredZincPageModel
         Ticket = await mediator.RequestResponseAsync<GetTicketByKey, Ticket>(new GetTicketByKey(TicketKey));
     }
 
+    private async Task UpdateStatus()
+    {
+        var isSuccessful = Enum.TryParse<TicketStatus>(NewStatus, out var newStatus);
+        if (!isSuccessful)
+        {
+            newStatus = Ticket.Status;
+        }
+
+        await mediator.ExecuteCommandAsync(new UpdateTicketStatusCommand(TicketKey, newStatus, GetZincUserKey()));
+    }
+
     public static Dictionary<string, string> GetBreadcrumbs(string projectShorthand, Guid ticketKey) => ProjectModel.GetBreadcrumbs(projectShorthand).AddAndReturn(pageTitle, $"/projects/{projectShorthand}/{ticketKey}");
+
+    public enum PostAction
+    {
+        UpdateDescription,
+        UpdateStatus,
+    }
 }
