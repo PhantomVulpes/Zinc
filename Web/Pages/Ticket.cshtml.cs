@@ -19,10 +19,9 @@ public class TicketModel : SecuredZincPageModel
         this.mediator = mediator;
     }
 
-    private static readonly string pageTitle = "Ticket";
-    public override string PageTitle => pageTitle;
+    public override string PageTitle => Ticket.Title;
 
-    public override Dictionary<string, string> Breadcrumbs => GetBreadcrumbs(Project.Shorthand, Ticket.Key);
+    public override Dictionary<string, string> Breadcrumbs => GetBreadcrumbs(Project, Ticket);
 
     [BindProperty]
     public string ProjectShorthand { get; set; } = string.Empty;
@@ -50,7 +49,6 @@ public class TicketModel : SecuredZincPageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        // TODO: Version on footer
         await LoadProperties();
 
         await UpdateStatus();
@@ -76,7 +74,7 @@ public class TicketModel : SecuredZincPageModel
         await mediator.ExecuteCommandAsync(new UpdateTicketStatusCommand(TicketKey, newStatus, GetZincUserKey()));
     }
 
-    public static Dictionary<string, string> GetBreadcrumbs(string projectShorthand, Guid ticketKey) => ProjectModel.GetBreadcrumbs(projectShorthand).AddAndReturn(pageTitle, $"/projects/{projectShorthand}/{ticketKey}");
+    public static Dictionary<string, string> GetBreadcrumbs(Project project, Ticket ticket) => ProjectModel.GetBreadcrumbs(project).AddAndReturn(ticket.Title, ZincRoute.Ticket(project.Shorthand, ticket.Key));
 
     public enum PostAction
     {

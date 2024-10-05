@@ -25,7 +25,7 @@ public class CreateTicketModel : SecuredZincPageModel
     private readonly static string pageTitle = "Create Ticket";
     public override string PageTitle => pageTitle;
 
-    public override Dictionary<string, string> Breadcrumbs => GetBreadcrumbs(Project.Shorthand);
+    public override Dictionary<string, string> Breadcrumbs => GetBreadcrumbs(Project);
 
     [BindProperty] // TODO: I know there's a way to bind it to the Project instead, I did it in SEAM with Batches I think. 
     public Guid ProjectKey { get; set; } = Guid.Empty;
@@ -51,5 +51,5 @@ public class CreateTicketModel : SecuredZincPageModel
         return this.RedirectWithZincRoutes(ZincRoute.Project(Project.Shorthand));
     }
 
-    public static Dictionary<string, string> GetBreadcrumbs(string projectShorthand) => ProjectModel.GetBreadcrumbs(projectShorthand).AddAndReturn(pageTitle, "/create-work-item");
+    public static Dictionary<string, string> GetBreadcrumbs(Project project) => ProjectModel.GetBreadcrumbs(project).AddAndReturn(pageTitle, "/create-ticket");
 }
