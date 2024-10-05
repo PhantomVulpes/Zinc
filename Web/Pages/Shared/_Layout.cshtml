@@ -1,4 +1,5 @@
 ﻿@model ZincPageModel
+@using Vulpes.Zinc.Domain.Configuration
 @using Vulpes.Zinc.Web.Models
 
 <!DOCTYPE html>
@@ -52,7 +53,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - Zinc - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2024 - Zinc @ApplicationConfiguration.Version - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
 

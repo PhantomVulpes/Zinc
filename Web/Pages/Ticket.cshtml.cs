@@ -50,6 +50,7 @@ public class TicketModel : SecuredZincPageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
+        // TODO: Version on footer
         await LoadProperties();
 
         await UpdateStatus();
