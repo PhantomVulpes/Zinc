@@ -16,7 +16,7 @@
         <a class="btn-group btn btn-primary" href="@ZincRoute.CreateTicket(Model.Project.Shorthand)">Create Ticket</a>
     </div>
 </div>
-@if (Model.Tickets.Any())
+@if (Model.TicketsByStatus.Any())
 {
     @foreach (var (status, tickets) in Model.TicketsByStatus)
     {
