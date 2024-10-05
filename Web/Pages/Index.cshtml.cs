@@ -1,5 +1,6 @@
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Web.Models;
+using Vulpes.Zinc.Web.Routing;
 
 namespace Vulpes.Zinc.Web.Pages;
 public class IndexModel : ZincPageModel
@@ -23,5 +24,5 @@ public class IndexModel : ZincPageModel
         LoggedUsername = HttpContext.User.Identity!.Name!;
     }
 
-    public static Dictionary<string, string> GetBreadcrumbs() => new() { { pageTitle, "/index" } };
+    public static Dictionary<string, string> GetBreadcrumbs() => new() { { pageTitle, ZincRoute.Home() } };
 }

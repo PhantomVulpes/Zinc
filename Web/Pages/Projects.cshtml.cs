@@ -3,6 +3,7 @@ using Vulpes.Electrum.Core.Domain.Mediation;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Queries;
 using Vulpes.Zinc.Web.Models;
+using Vulpes.Zinc.Web.Routing;
 
 namespace Vulpes.Zinc.Web.Pages;
 
@@ -27,5 +28,5 @@ public class ProjectsModel : SecuredZincPageModel
         AccessibleProjects = await mediator.RequestResponseAsync<GetProjectsForUser, IEnumerable<Project>>(new GetProjectsForUser(GetZincUserKey()));
     }
 
-    public static Dictionary<string, string> GetBreadcrumbs() => IndexModel.GetBreadcrumbs().AddAndReturn(pageTitle, "/projects");
+    public static Dictionary<string, string> GetBreadcrumbs() => IndexModel.GetBreadcrumbs().AddAndReturn(pageTitle, ZincRoute.Projects());
 }

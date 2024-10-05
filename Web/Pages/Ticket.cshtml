@@ -1,0 +1,61 @@
+﻿@page "/projects/{projectShorthand}/{ticketKey}"
+@using Vulpes.Zinc.Domain.Models
+@using Vulpes.Zinc.Web.Pages
+@model Vulpes.Zinc.Web.Pages.TicketModel
+@{
+}
+
+<div class="row">
+    <div class="col">
+        <h1>@Model.Project.Name</h1>
+    </div>
+</div>
+
+<form method="post">
+    <div class="row">
+        <div class="col">
+            <h1>@Model.Ticket.Title</h1>
+        </div>
+        <div class="col">
+            <div class="btn-group float-right" role="group">
+
+                @foreach (var status in Enum.GetValues<TicketStatus>())
+                {
+                    if (status == TicketStatus.Unknown)
+                    {
+                        continue;
+                    }
+
+                    if (Model.Ticket.Status == status)
+                    {
+                        <input type="submit" class="btn btn-danger" asp-for=@Model.NewStatus value="@status.ToString()" disabled />
+                        continue;
+                    }
+
+                    <input type="submit" class="btn btn-primary" asp-for=@Model.NewStatus value="@status.ToString()" />
+                }
+            </div>
+            <input type="hidden" name="@nameof(Model.TicketKey)" value="@Model.TicketKey" />
+            <input type="hidden" name="@nameof(Model.ProjectShorthand)" value="@Model.ProjectShorthand" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col form-group mb-3">
+            <input type="text" class="form-control" name="@nameof(Model.UpdatedDescription)" value="@Model.UpdatedDescription" onkeydown="submitOnEnter(event);" />
+        </div>
+
+        <div class="col-auto">
+            <input type="submit" class="btn btn-primary" id="updateButton" name="updateButton" value="Update" />
+        </div>
+    </div>
+</form>
+
+<script>
+    function submitOnEnter(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            document.getElementById("updateButton").click();
+        }
+    }
+</script>

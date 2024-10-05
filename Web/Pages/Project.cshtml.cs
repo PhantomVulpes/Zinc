@@ -3,6 +3,7 @@ using Vulpes.Electrum.Core.Domain.Mediation;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Queries;
 using Vulpes.Zinc.Web.Models;
+using Vulpes.Zinc.Web.Routing;
 
 namespace Vulpes.Zinc.Web.Pages;
 
@@ -18,10 +19,9 @@ public class ProjectModel : SecuredZincPageModel
     public Project Project { get; private set; } = Project.Empty;
     public IEnumerable<Ticket> Tickets { get; private set; } = [];
 
-    public static readonly string pageTitle = "Project";
-    public override string PageTitle => pageTitle;
+    public override string PageTitle => Project.Name;
 
-    public override Dictionary<string, string> Breadcrumbs => GetBreadcrumbs(Project.Shorthand);
+    public override Dictionary<string, string> Breadcrumbs => GetBreadcrumbs(Project);
 
     public async Task OnGetAsync(string projectShorthand)
     {
@@ -29,5 +29,5 @@ public class ProjectModel : SecuredZincPageModel
         Tickets = await mediator.RequestResponseAsync<GetTicketsUnderProject, IEnumerable<Ticket>>(new GetTicketsUnderProject(Project.Key));
     }
 
-    public static Dictionary<string, string> GetBreadcrumbs(string projectShorthand) => ProjectsModel.GetBreadcrumbs().AddAndReturn(pageTitle, $"/projects/{projectShorthand}");
+    public static Dictionary<string, string> GetBreadcrumbs(Project project) => ProjectsModel.GetBreadcrumbs().AddAndReturn(project.Name, ZincRoute.Project(project.Shorthand));
 }
