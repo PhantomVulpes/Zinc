@@ -17,7 +17,6 @@ public class ProjectModel : SecuredZincPageModel
     }
 
     public Project Project { get; private set; } = Project.Empty;
-    public IEnumerable<Ticket> Tickets { get; private set; } = [];
     public Dictionary<TicketStatus, IEnumerable<Ticket>> TicketsByStatus { get; private set; } = [];
 
     public override string PageTitle => Project.Name;
@@ -27,9 +26,7 @@ public class ProjectModel : SecuredZincPageModel
     public async Task OnGetAsync(string projectShorthand)
     {
         Project = await mediator.RequestResponseAsync<GetProjectByShorthand, Project>(new GetProjectByShorthand(projectShorthand));
-        Tickets = await mediator.RequestResponseAsync<GetTicketsUnderProject, IEnumerable<Ticket>>(new GetTicketsUnderProject(Project.Key));
-
-        TicketsByStatus = Tickets.GroupBy(ticket => ticket.Status).ToDictionary(group => group.Key, group => group.AsEnumerable());
+        TicketsByStatus = (await mediator.RequestResponseAsync<GetTicketsUnderProject, IEnumerable<Ticket>>(new GetTicketsUnderProject(Project.Key))).GroupBy(ticket => ticket.Status).ToDictionary(group => group.Key, group => group.AsEnumerable());
     }
 
     public static Dictionary<string, string> GetBreadcrumbs(Project project) => ProjectsModel.GetBreadcrumbs().AddAndReturn(project.Name, ZincRoute.Project(project.Shorthand));
