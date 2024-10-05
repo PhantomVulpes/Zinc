@@ -8,24 +8,36 @@
 <p>Viewing:</p>
 <p>@Model.Project.Name (@Model.Project.Shorthand)</p>
 
-<h1>Tickets</h1>
+<div class="row">
+    <div class="col">
+        <h1>Tickets</h1>
+    </div>
+    <div class="col">
+        <a class="btn-group btn btn-primary" href="@ZincRoute.CreateTicket(Model.Project.Shorthand)">Create Ticket</a>
+    </div>
+</div>
 @if (Model.Tickets.Any())
 {
-    <ul>
-        @foreach (var ticket in Model.Tickets)
-        {
-            <li>
-                <a href="@ZincRoute.Ticket(Model.Project.Shorthand, ticket.Key)">
-                    <p>@ticket.Title - @ticket.Status</p>
-                </a>
-                <p class="text-muted small">@ticket.Description</p>
-            </li>
-        }
-    </ul>
+    @foreach (var (status, tickets) in Model.TicketsByStatus)
+    {
+        <div class="row border border-primary rounded mb-2">
+            <h2>@status</h2>
+            @foreach (var ticket in tickets)
+            {
+                <div class="row">
+                    <div class="col border border-dark m-2">
+                        <a href="@ZincRoute.Ticket(Model.Project.Shorthand, ticket.Key)">
+                            <p>@ticket.Title</p>
+                        </a>
+
+                        <p>@ticket.Description</p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 }
 else
 {
     <p>No tickets under this project.</p>
 }
-
-<a href="@ZincRoute.CreateTicket(Model.Project.Shorthand)">Create Ticket</a>
