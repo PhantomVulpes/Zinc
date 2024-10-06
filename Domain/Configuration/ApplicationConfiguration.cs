@@ -40,5 +40,5 @@ public static class ApplicationConfiguration
 
     public static string DatabaseConnectionString => "mongodb://localhost:60001/";
 
-    public static string Version => "Alpha 0.2";
+    public static string Version => "Alpha 0.3";
 }
