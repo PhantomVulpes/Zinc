@@ -19,7 +19,6 @@
 {
     @foreach (var (status, tickets) in Model.TicketsByStatus)
     {
-
         <div class="row border border-primary rounded mb-2">
             <h2>@status</h2>
             @foreach (var ticket in tickets)
