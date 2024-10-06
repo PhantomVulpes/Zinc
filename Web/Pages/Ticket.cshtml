@@ -59,12 +59,9 @@
     </div>
 
     <div class="row">
-        <div class="col">
+        <div class="col form-group mb-3">
             <input value="@Model.Comment" class="form-control" name="@nameof(Model.Comment)" />
         </div>
-    </div>
-
-    <div class="row">
         <div class="col-auto">
             <input type="submit" class="btn btn-primary" name="@TicketModel.PostAction.AddComment.ToString()" value="+" />
         </div>
