@@ -1,12 +1,11 @@
 ﻿@page "/projects/{ProjectShorthand}"
+@using Vulpes.Zinc.Domain.Models
 @using Vulpes.Zinc.Web.Routing
 @model Vulpes.Zinc.Web.Pages.ProjectModel
 @{
 }
-<h1>Project</h1>
-
-<p>Viewing:</p>
-<p>@Model.Project.Name (@Model.Project.Shorthand)</p>
+<h1>@Model.Project.Name (@Model.Project.Shorthand)</h1>
+<p>@Model.Project.Description</p>
 
 <div class="row">
     <div class="col">
@@ -20,19 +19,12 @@
 {
     @foreach (var (status, tickets) in Model.TicketsByStatus)
     {
+
         <div class="row border border-primary rounded mb-2">
             <h2>@status</h2>
             @foreach (var ticket in tickets)
             {
-                <div class="row">
-                    <div class="col border border-dark m-2">
-                        <a href="@ZincRoute.Ticket(Model.Project.Shorthand, ticket.Key)">
-                            <p>@ticket.Title</p>
-                        </a>
-
-                        <p>@ticket.Description</p>
-                    </div>
-                </div>
+                @await Component.InvokeAsync("TicketOverview", new { ticket = ticket })
             }
         </div>
     }
