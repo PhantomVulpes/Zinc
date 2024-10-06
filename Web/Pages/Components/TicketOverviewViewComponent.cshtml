@@ -1,0 +1,16 @@
+﻿@using System.Text.Json
+@using Vulpes.Zinc.Web.Routing
+@using Vulpes.Zinc.Web.Pages.Components
+@model TicketOverviewModel
+@{
+}
+
+<div class="row">
+    <div class="col border border-dark rounded m-2">
+        <a href="@ZincRoute.Ticket(Model.Project.Shorthand, Model.Ticket.Key)">
+            <p>@Model.Ticket.Title</p>
+        </a>
+
+        <p>@Model.Ticket.Description</p>
+    </div>
+</div>

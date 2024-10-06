@@ -26,8 +26,29 @@ public class ProjectModel : SecuredZincPageModel
     public async Task OnGetAsync(string projectShorthand)
     {
         Project = await mediator.RequestResponseAsync<GetProjectByShorthand, Project>(new GetProjectByShorthand(projectShorthand));
-        TicketsByStatus = (await mediator.RequestResponseAsync<GetTicketsUnderProject, IEnumerable<Ticket>>(new GetTicketsUnderProject(Project.Key))).GroupBy(ticket => ticket.Status).ToDictionary(group => group.Key, group => group.AsEnumerable());
+        TicketsByStatus = (await mediator.RequestResponseAsync<GetTicketsUnderProject, IEnumerable<Ticket>>(new GetTicketsUnderProject(Project.Key)))
+            .GroupBy(ticket => ticket.Status)
+            .OrderBy(group => group.Key, new TicketStatusComparer())
+            .ToDictionary(group => group.Key, group => group.AsEnumerable());
     }
 
     public static Dictionary<string, string> GetBreadcrumbs(Project project) => ProjectsModel.GetBreadcrumbs().AddAndReturn(project.Name, ZincRoute.Project(project.Shorthand));
+
+    private class TicketStatusComparer : IComparer<TicketStatus>
+    {
+        private static readonly List<TicketStatus> StatusHierarchy =
+        [
+            TicketStatus.InProgress,
+            TicketStatus.Open,
+            TicketStatus.InReview,
+            TicketStatus.Complete
+        ];
+
+        public int Compare(TicketStatus x, TicketStatus y)
+        {
+            var indexX = StatusHierarchy.IndexOf(x);
+            var indexY = StatusHierarchy.IndexOf(y);
+            return indexX.CompareTo(indexY);
+        }
+    }
 }
