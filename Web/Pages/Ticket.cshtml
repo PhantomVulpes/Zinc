@@ -42,7 +42,7 @@
 
     <div class="row">
         <div class="col form-group mb-3">
-            <input type="text" class="form-control" name="@nameof(Model.UpdatedDescription)" value="@Model.UpdatedDescription" onkeydown="submitOnEnter(event);" />
+            <textarea class="form-control" name="@nameof(Model.UpdatedDescription)" onkeydown="submitOnEnter(event);">@Model.UpdatedDescription</textarea>
         </div>
 
         <div class="col-auto">
@@ -60,7 +60,7 @@
 
     <div class="row">
         <div class="col">
-            <textarea class="form-control" name="@nameof(Model.Comment)" rows="3"></textarea>
+            <input value="@Model.Comment" class="form-control" name="@nameof(Model.Comment)" />
         </div>
     </div>
 
@@ -86,7 +86,7 @@
                 {
                     <tr>
                         <td>@comment.Value</td>
-                        <td>@comment.Author</td>
+                        <td>@(await Model.GetCommentAuthorName(comment.Author)) </td>
                         <td>@comment.CreatedDate</td>
                     </tr>
                 }

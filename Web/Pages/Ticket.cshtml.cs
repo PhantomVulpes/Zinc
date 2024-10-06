@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Vulpes.Electrum.Core.Domain.Extensions;
 using Vulpes.Electrum.Core.Domain.Mediation;
 using Vulpes.Zinc.Domain.Commands;
+using Vulpes.Zinc.Domain.Data;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Queries;
 using Vulpes.Zinc.Web.Extensions;
@@ -13,10 +14,12 @@ namespace Vulpes.Zinc.Web.Pages;
 public class TicketModel : SecuredZincPageModel
 {
     private readonly IMediator mediator;
+    private readonly IDataRepository<ZincUser> userRepository;
 
-    public TicketModel(IMediator mediator)
+    public TicketModel(IMediator mediator, IDataRepository<ZincUser> userRepository)
     {
         this.mediator = mediator;
+        this.userRepository = userRepository;
     }
 
     public override string PageTitle => Ticket.Title;
@@ -72,6 +75,8 @@ public class TicketModel : SecuredZincPageModel
         Project = await mediator.RequestResponseAsync<GetProjectByShorthand, Project>(new GetProjectByShorthand(ProjectShorthand));
         Ticket = await mediator.RequestResponseAsync<GetTicketByKey, Ticket>(new GetTicketByKey(TicketKey));
     }
+
+    public async Task<string> GetCommentAuthorName(Guid authorKey) => (await userRepository.GetAsync(authorKey)).Username;
 
     private async Task UpdateStatus()
     {
