@@ -37,6 +37,9 @@ public class TicketModel : SecuredZincPageModel
     [BindProperty]
     public string UpdatedDescription { get; set; } = string.Empty;
 
+    [BindProperty]
+    public string Comment { get; set; } = string.Empty;
+
     public async Task OnGetAsync(string projectShorthand, Guid ticketKey)
     {
         ProjectShorthand = projectShorthand;
@@ -51,8 +54,15 @@ public class TicketModel : SecuredZincPageModel
     {
         await LoadProperties();
 
-        await UpdateStatus();
-        await mediator.ExecuteCommandAsync(new UpdateTicketDescriptionCommand(TicketKey, UpdatedDescription, GetZincUserKey()));
+        if (HttpContext.Request.Form.ContainsKey(PostAction.AddComment.ToString()))
+        {
+            await mediator.ExecuteCommandAsync(new AddTicketCommentCommand(Comment, TicketKey, GetZincUserKey()));
+        }
+        else
+        {
+            await UpdateStatus();
+            await mediator.ExecuteCommandAsync(new UpdateTicketDescriptionCommand(TicketKey, UpdatedDescription, GetZincUserKey()));
+        }
 
         return this.RedirectWithZincRoutes(ZincRoute.Ticket(Project.Shorthand, Ticket.Key));
     }
@@ -78,7 +88,7 @@ public class TicketModel : SecuredZincPageModel
 
     public enum PostAction
     {
-        UpdateDescription,
-        UpdateStatus,
+        UpdateTicket,
+        AddComment,
     }
 }

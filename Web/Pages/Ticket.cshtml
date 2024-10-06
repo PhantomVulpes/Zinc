@@ -51,11 +51,62 @@
     </div>
 </form>
 
+<form method="post">
+    <div class="row">
+        <div class="col">
+            <h2>Comments</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <textarea class="form-control" name="@nameof(Model.Comment)" rows="3"></textarea>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-auto">
+            <input type="submit" class="btn btn-primary" name="@TicketModel.PostAction.AddComment.ToString()" value="+" />
+        </div>
+    </div>
+
+    @if (Model.Ticket.Comments.Any())
+    {
+        <p>Try table-hover too.</p>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Comment</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var comment in Model.Ticket.Comments)
+                {
+                    <tr>
+                        <td>@comment.Value</td>
+                        <td>@comment.Author</td>
+                        <td>@comment.CreatedDate</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col">
+                <p>No comments</p>
+            </div>
+        </div>
+    }
+</form>
+
 <script>
     function submitOnEnter(event) {
         if (event.key === "Enter") {
             event.preventDefault();
-            document.getElementById("updateButton").click();
         }
     }
 </script>

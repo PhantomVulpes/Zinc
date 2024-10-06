@@ -14,7 +14,7 @@ public record Ticket : AggregateRoot
     public string Description { get; init; } = string.Empty;
     public Guid AssignedToKey { get; init; } = Guid.Empty;
     public Guid ReporterKey { get; init; } = Guid.Empty;
-    public IEnumerable<string> Comments { get; init; } = [];
+    public IEnumerable<Comment> Comments { get; init; } = [];
     public DateTime CreatedDate { get; init; } = DateTime.MinValue;
     public DateTime CompletedDate { get; init; } = DateTime.MinValue;
     public Guid ProjectKey { get; init; } = Guid.Empty;
@@ -22,6 +22,26 @@ public record Ticket : AggregateRoot
     public Dictionary<TicketRelationship, Guid> TicketRelationships { get; init; } = [];
 
     public TicketStatus Status { get; init; } = TicketStatus.Unknown;
+
+    public Ticket AddComment(string comment, ZincUser author)
+    {
+        var newComment = Comment.Default with
+        {
+            Value = comment,
+            Author = author.Key,
+        };
+
+        return AddComment(newComment);
+    }
+
+    public Ticket AddComment(Comment comment)
+    {
+        var comments = Comments.Append(comment);
+        return this with
+        {
+            Comments = comments,
+        };
+    }
 
     // TODO: Add labels, attachments (requires Duralumin)
 }
