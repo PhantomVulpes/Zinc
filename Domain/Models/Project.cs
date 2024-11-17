@@ -21,6 +21,8 @@ public record Project : AggregateRoot
     public Guid CreatorKey { get; init; } = Guid.Empty;
     public ProjectStatus Status { get; init; } = ProjectStatus.Unknown;
 
+    public IEnumerable<string> Labels { get; init; } = [];
+
     protected override ElectrumValidationResult InternalValidate()
     {
         var internalResult = base.InternalValidate();
