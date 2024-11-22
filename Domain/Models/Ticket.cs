@@ -18,6 +18,7 @@ public record Ticket : AggregateRoot
     public DateTime CreatedDate { get; init; } = DateTime.MinValue;
     public DateTime CompletedDate { get; init; } = DateTime.MinValue;
     public Guid ProjectKey { get; init; } = Guid.Empty;
+    public IEnumerable<string> Labels { get; init; } = [];
 
     public Dictionary<TicketRelationship, Guid> TicketRelationships { get; init; } = [];
 
@@ -43,7 +44,7 @@ public record Ticket : AggregateRoot
         };
     }
 
-    // TODO: Add labels, attachments (requires Duralumin)
+    // TODO: Add attachments (requires Duralumin)
 }
 
 public enum TicketRelationship

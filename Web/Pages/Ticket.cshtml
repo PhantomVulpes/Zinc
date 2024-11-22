@@ -40,8 +40,14 @@
         </div>
     </div>
 
-    <div id="ticket-labels">
-        <button type="button" class="btn btn-secondary" onclick="addTextInputToElement('ticket-labels', 'new-text-input')">Add Label</button>
+    <div class="row">
+        <div class="col form-group">
+            <input type="text" class="form-control" value="@Model.UpdatedLabels" name="@nameof(Model.UpdatedLabels)" />
+            <p class="text-muted small">Labels are comma delimmited.</p>
+        </div>
+        <div class="col-auto">
+            <input type="submit" class="btn btn-primary" name="@TicketModel.PostAction.UpdateLabels.ToString()" value="Update Labels" />
+        </div>
     </div>
 
     <div class="row">
@@ -50,7 +56,7 @@
         </div>
 
         <div class="col-auto">
-            <input type="submit" class="btn btn-primary" id="updateButton" name="updateButton" value="Update" />
+            <input type="submit" class="btn btn-primary" id="updateButton" name="updateButton" value="Update Description" />
         </div>
     </div>
 </form>
@@ -108,27 +114,5 @@
         if (event.key === "Enter") {
             event.preventDefault();
         }
-    }
-
-    function addTextInputToElement(parentElementId, inputClasses) {
-        const element = document.getElementById(parentElementId);
-
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.className = inputClasses;
-
-        element.appendChild(input);
-    }
-
-    function buildJsonFromInputs(inputClass) {
-        const inputs = document.getElementsByClassName(inputClass);
-        const values = [];
-
-        for (let i = 0; i < inputs.length; i++) {
-            const input = inputs[i];
-            values.push(input.value);
-        }
-
-        return JSON.stringify(values);
     }
 </script>

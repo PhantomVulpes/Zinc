@@ -43,6 +43,11 @@ public class TicketModel : SecuredZincPageModel
     [BindProperty]
     public string Comment { get; set; } = string.Empty;
 
+    public string LabelsJoined { get; set; } = string.Empty;
+
+    [BindProperty]
+    public string UpdatedLabels { get; set; } = string.Empty;
+
     public async Task OnGetAsync(string projectShorthand, Guid ticketKey)
     {
         ProjectShorthand = projectShorthand;
@@ -61,6 +66,11 @@ public class TicketModel : SecuredZincPageModel
         {
             await mediator.ExecuteCommandAsync(new AddTicketCommentCommand(Comment, TicketKey, GetZincUserKey()));
         }
+        else if (HttpContext.Request.Form.ContainsKey(PostAction.UpdateLabels.ToString()))
+        {
+            var labels = UpdatedLabels.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(label => label.Trim()).ToList();
+            // await mediator.ExecuteCommandAsync(new UpdateTicketLabelsCommand(TicketKey, labels, GetZincUserKey()));
+        }
         else
         {
             await UpdateStatus();
@@ -74,6 +84,7 @@ public class TicketModel : SecuredZincPageModel
     {
         Project = await mediator.RequestResponseAsync<GetProjectByShorthand, Project>(new GetProjectByShorthand(ProjectShorthand));
         Ticket = await mediator.RequestResponseAsync<GetTicketByKey, Ticket>(new GetTicketByKey(TicketKey));
+        LabelsJoined = string.Join(", ", Ticket.Labels);
     }
 
     public async Task<string> GetCommentAuthorName(Guid authorKey) => (await userRepository.GetAsync(authorKey)).Username;
@@ -95,5 +106,6 @@ public class TicketModel : SecuredZincPageModel
     {
         UpdateTicket,
         AddComment,
+        UpdateLabels
     }
 }
