@@ -7,6 +7,23 @@
 <h1>@Model.Project.Name (@Model.Project.Shorthand)</h1>
 <p>@Model.Project.Description</p>
 
+<form method="post">
+    <div class="row">
+        <h3>Labels</h3>
+        <div class="row">
+            <div class="col form-group">
+                <input type="text" class="form-control" value="@Model.UpdatedLabels" name="@nameof(Model.UpdatedLabels)" />
+                <p class="text-muted small">Labels are comma delimmited.</p>
+            </div>
+            <div class="col-auto">
+                <input type="submit" class="btn btn-primary" value="Update Labels" />
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" name="@nameof(Model.ProjectShorthand)" value="@Model.ProjectShorthand" />
+</form>
+
 <div class="row">
     <div class="col">
         <h1>Tickets</h1>
@@ -15,6 +32,7 @@
         <a class="btn-group btn btn-primary" href="@ZincRoute.CreateTicket(Model.Project.Shorthand)">Create Ticket</a>
     </div>
 </div>
+
 @if (Model.TicketsByStatus.Any())
 {
     @foreach (var (status, tickets) in Model.TicketsByStatus)
