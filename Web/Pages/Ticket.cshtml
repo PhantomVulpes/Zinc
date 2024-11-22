@@ -2,14 +2,6 @@
 @using Vulpes.Zinc.Domain.Models
 @using Vulpes.Zinc.Web.Pages
 @model Vulpes.Zinc.Web.Pages.TicketModel
-@{
-}
-
-<div class="row">
-    <div class="col">
-        <h1>@Model.Project.Name</h1>
-    </div>
-</div>
 
 <form method="post">
     <div class="row">
@@ -18,7 +10,6 @@
         </div>
         <div class="col">
             <div class="btn-group float-right" role="group">
-
                 @foreach (var status in Enum.GetValues<TicketStatus>())
                 {
                     if (status == TicketStatus.Unknown)
@@ -41,12 +32,28 @@
     </div>
 
     <div class="row">
-        <div class="col form-group mb-3">
-            <textarea class="form-control" name="@nameof(Model.UpdatedDescription)" onkeydown="submitOnEnter(event);">@Model.UpdatedDescription</textarea>
+        <h3>Labels</h3>
+        <div class="row">
+            <div class="col form-group">
+                <input type="text" class="form-control" value="@Model.UpdatedLabels" name="@nameof(Model.UpdatedLabels)" />
+                <p class="text-muted small">Labels are comma delimmited.</p>
+            </div>
+            <div class="col-auto">
+                <input type="submit" class="btn btn-primary" name="@TicketModel.PostAction.UpdateLabels.ToString()" value="Update Labels" />
+            </div>
         </div>
+    </div>
 
-        <div class="col-auto">
-            <input type="submit" class="btn btn-primary" id="updateButton" name="updateButton" value="Update" />
+    <div class="row">
+        <h2>Description</h2>
+        <div class="row">
+            <div class="col form-group mb-3">
+                <textarea class="form-control" name="@nameof(Model.UpdatedDescription)" onkeydown="submitOnEnter(event);">@Model.UpdatedDescription</textarea>
+            </div>
+
+            <div class="col-auto">
+                <input type="submit" class="btn btn-primary" id="updateButton" name="updateButton" value="Update Description" />
+            </div>
         </div>
     </div>
 </form>

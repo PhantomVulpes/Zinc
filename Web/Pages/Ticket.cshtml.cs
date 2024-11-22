@@ -43,6 +43,9 @@ public class TicketModel : SecuredZincPageModel
     [BindProperty]
     public string Comment { get; set; } = string.Empty;
 
+    [BindProperty]
+    public string UpdatedLabels { get; set; } = string.Empty;
+
     public async Task OnGetAsync(string projectShorthand, Guid ticketKey)
     {
         ProjectShorthand = projectShorthand;
@@ -51,6 +54,7 @@ public class TicketModel : SecuredZincPageModel
         await LoadProperties();
 
         UpdatedDescription = Ticket.Description;
+        UpdatedLabels = string.Join(", ", Ticket.Labels);
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -60,6 +64,11 @@ public class TicketModel : SecuredZincPageModel
         if (HttpContext.Request.Form.ContainsKey(PostAction.AddComment.ToString()))
         {
             await mediator.ExecuteCommandAsync(new AddTicketCommentCommand(Comment, TicketKey, GetZincUserKey()));
+        }
+        else if (HttpContext.Request.Form.ContainsKey(PostAction.UpdateLabels.ToString()))
+        {
+            var labels = UpdatedLabels.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(label => label.Trim()).ToList();
+            await mediator.ExecuteCommandAsync(new UpdateTicketLabelsCommand(labels, TicketKey, GetZincUserKey()));
         }
         else
         {
@@ -95,5 +104,6 @@ public class TicketModel : SecuredZincPageModel
     {
         UpdateTicket,
         AddComment,
+        UpdateLabels
     }
 }

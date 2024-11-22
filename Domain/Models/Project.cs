@@ -21,6 +21,11 @@ public record Project : AggregateRoot
     public Guid CreatorKey { get; init; } = Guid.Empty;
     public ProjectStatus Status { get; init; } = ProjectStatus.Unknown;
 
+    public IEnumerable<string> Labels { get; init; } = [];
+
+    public AccessResult UserIsAllowed(Guid userKey) => CreatorKey == userKey || AllowedUserKeys.Contains(userKey) ? AccessResult.Success() : AccessResult.Fail($"User {userKey} is not allowed to access project {Name}.");
+    public AccessResult UserIsAllowed(ZincUser user) => UserIsAllowed(user.Key);
+
     protected override ElectrumValidationResult InternalValidate()
     {
         var internalResult = base.InternalValidate();
