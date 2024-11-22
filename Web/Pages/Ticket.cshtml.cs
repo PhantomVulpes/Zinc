@@ -56,6 +56,7 @@ public class TicketModel : SecuredZincPageModel
         await LoadProperties();
 
         UpdatedDescription = Ticket.Description;
+        UpdatedLabels = LabelsJoined;
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -69,7 +70,7 @@ public class TicketModel : SecuredZincPageModel
         else if (HttpContext.Request.Form.ContainsKey(PostAction.UpdateLabels.ToString()))
         {
             var labels = UpdatedLabels.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(label => label.Trim()).ToList();
-            // await mediator.ExecuteCommandAsync(new UpdateTicketLabelsCommand(TicketKey, labels, GetZincUserKey()));
+            await mediator.ExecuteCommandAsync(new UpdateTicketLabelsCommand(labels, TicketKey, GetZincUserKey()));
         }
         else
         {
