@@ -17,7 +17,7 @@ public class GetProjectsForUserHandler : QueryHandler<GetProjectsForUser, IEnume
 
     public static async Task<IEnumerable<Project>> RetrieveProjects(IQueryProvider<Project> queryProvider, Guid userKey)
     {
-        var projects = (await queryProvider.BeginQueryAsync()).Where(project => project.CreatorKey == userKey || project.AllowedUserKeys.Contains(userKey));
+        var projects = (await queryProvider.BeginQueryAsync()).Where(project => project.CreatorKey == userKey || project.AllowedUserKeys.Contains(userKey)).OrderBy(project => project.Name);
         return projects;
     }
 }

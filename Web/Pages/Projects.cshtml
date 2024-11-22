@@ -2,7 +2,14 @@
 @using Vulpes.Zinc.Web.Routing
 @model Vulpes.Zinc.Web.Pages.ProjectsModel
 
-<h1>Projects</h1>
+<div class="row">
+    <div class="col">
+        <h1>Projects</h1>
+    </div>
+    <div class="col-auto">
+        <a class="btn btn-primary" href="@ZincRoute.CreateProject()">Create a new project</a>
+    </div>
+</div>
 <ul>
     @foreach(var project in Model.AccessibleProjects)
     {
