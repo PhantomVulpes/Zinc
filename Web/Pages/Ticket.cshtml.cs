@@ -43,8 +43,6 @@ public class TicketModel : SecuredZincPageModel
     [BindProperty]
     public string Comment { get; set; } = string.Empty;
 
-    public string LabelsJoined { get; set; } = string.Empty;
-
     [BindProperty]
     public string UpdatedLabels { get; set; } = string.Empty;
 
@@ -56,7 +54,7 @@ public class TicketModel : SecuredZincPageModel
         await LoadProperties();
 
         UpdatedDescription = Ticket.Description;
-        UpdatedLabels = LabelsJoined;
+        UpdatedLabels = string.Join(", ", Ticket.Labels);
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -85,7 +83,6 @@ public class TicketModel : SecuredZincPageModel
     {
         Project = await mediator.RequestResponseAsync<GetProjectByShorthand, Project>(new GetProjectByShorthand(ProjectShorthand));
         Ticket = await mediator.RequestResponseAsync<GetTicketByKey, Ticket>(new GetTicketByKey(TicketKey));
-        LabelsJoined = string.Join(", ", Ticket.Labels);
     }
 
     public async Task<string> GetCommentAuthorName(Guid authorKey) => (await userRepository.GetAsync(authorKey)).Username;
