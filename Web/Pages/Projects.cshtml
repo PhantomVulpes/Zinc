@@ -10,13 +10,49 @@
         <a class="btn btn-primary" href="@ZincRoute.CreateProject()">Create a new project</a>
     </div>
 </div>
-<ul>
-    @foreach(var project in Model.AccessibleProjects)
+
+<div>
+    @foreach (var project in Model.AccessibleProjects)
     {
-        <li>
-            <a href="@ZincRoute.Project(project.Shorthand)">
-                @project.Name <p class="text-muted small">(@project.Shorthand)</p>
-            </a>
-        </li>
+        var borderClass = "p-2 border border-2 border-secondary";
+
+        @if (Model.AccessibleProjects.Last().Key != project.Key)
+        {
+            borderClass += " border-bottom-0";
+        }
+
+        <div class="@borderClass">
+            <div class="row">
+                <div class="col-auto">
+                    <h3>
+                        <a class="text-decoration-none" href="@ZincRoute.Project(project.Shorthand)">@project.Name</a>
+                    </h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <p class="m-0 text-muted">@project.Shorthand</p>
+                </div>
+                <div class="col">
+                    <p>Owner: </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <p class="text-truncate">@project.Description</p>
+                </div>
+            </div>
+
+            <div class="row">
+                @foreach (var (status, number) in Model.ProjectStats[project.Key])
+                {
+                    <div class="col">
+                        <p>@status: @number</p>
+                    </div>
+                }
+            </div>
+        </div>
     }
-</ul>
+</div>
