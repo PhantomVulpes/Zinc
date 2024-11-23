@@ -29,6 +29,7 @@ public static class ServiceCollectionExtensions
         .AddTransient<CommandHandler<AddTicketCommentCommand>, AddTicketCommentCommandHandler>()
         .AddTransient<CommandHandler<UpdateTicketLabelsCommand>, UpdateTicketLabelsCommandHandler>()
         .AddTransient<CommandHandler<UpdateProjectLabelsCommand>, UpdateProjectLabelsCommandHandler>()
+        .AddTransient<CommandHandler<DeleteTicketFromDatabaseCommand>, DeleteTicketFromDatabaseCommandHandler>()
         ;
 
     private static IServiceCollection InjectQueries(this IServiceCollection services) => services
@@ -37,6 +38,8 @@ public static class ServiceCollectionExtensions
         .AddTransient<QueryHandler<GetProjectByShorthand, Project>, GetProjectByShorthandHandler>()
         .AddTransient<QueryHandler<GetTicketsUnderProject, IEnumerable<Ticket>>, GetTicketsUnderProjectHandler>()
         .AddTransient<QueryHandler<GetTicketByKey, Ticket>, GetTicketByKeyHandler>()
+        .AddTransient<QueryHandler<GetTicketStatsByProject, Dictionary<TicketStatus, int>>, GetTicketStatsByProjectHandler>()
+        .AddTransient<QueryHandler<GetUserByKey, ZincUser>, GetUserByKeyHandler>()
         ;
 
     private static IServiceCollection InjectMediator(this IServiceCollection services)
@@ -53,6 +56,7 @@ public static class ServiceCollectionExtensions
                 .Register(provider.GetRequiredService<CommandHandler<AddTicketCommentCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<UpdateTicketLabelsCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<UpdateProjectLabelsCommand>>())
+                .Register(provider.GetRequiredService<CommandHandler<DeleteTicketFromDatabaseCommand>>())
                 ;
 
             _ = mediator
@@ -61,6 +65,8 @@ public static class ServiceCollectionExtensions
                 .Register(provider.GetRequiredService<QueryHandler<GetProjectByShorthand, Project>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetTicketsUnderProject, IEnumerable<Ticket>>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetTicketByKey, Ticket>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetTicketStatsByProject, Dictionary<TicketStatus, int>>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetUserByKey, ZincUser>>())
                 ;
 
             return mediator;

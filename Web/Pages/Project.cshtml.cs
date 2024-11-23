@@ -37,7 +37,10 @@ public class ProjectModel : SecuredZincPageModel
         TicketsByStatus = (await mediator.RequestResponseAsync<GetTicketsUnderProject, IEnumerable<Ticket>>(new GetTicketsUnderProject(Project.Key)))
             .GroupBy(ticket => ticket.Status)
             .OrderBy(group => group.Key, new TicketStatusComparer())
-            .ToDictionary(group => group.Key, group => group.AsEnumerable());
+            .ToDictionary(
+                group => group.Key,
+                group => group.OrderBy(ticket => string.Join(", ", ticket.Labels)).AsEnumerable()
+            );
 
         UpdatedLabels = string.Join(", ", Project.Labels);
     }
@@ -61,7 +64,8 @@ public class ProjectModel : SecuredZincPageModel
             TicketStatus.InProgress,
             TicketStatus.Open,
             TicketStatus.InReview,
-            TicketStatus.Complete
+            TicketStatus.Complete,
+            TicketStatus.Cancelled,
         ];
 
         public int Compare(TicketStatus x, TicketStatus y)

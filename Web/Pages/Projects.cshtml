@@ -2,14 +2,83 @@
 @using Vulpes.Zinc.Web.Routing
 @model Vulpes.Zinc.Web.Pages.ProjectsModel
 
-<h1>Projects</h1>
-<ul>
-    @foreach(var project in Model.AccessibleProjects)
+<div class="row">
+    <div class="col">
+        <h1>Projects</h1>
+    </div>
+    <div class="col-auto">
+        <a class="btn btn-primary" href="@ZincRoute.CreateProject()">Create a new project</a>
+    </div>
+</div>
+
+<div>
+    @foreach (var project in Model.AccessibleProjects)
     {
-        <li>
-            <a href="@ZincRoute.Project(project.Shorthand)">
-                @project.Name <p class="text-muted small">(@project.Shorthand)</p>
-            </a>
-        </li>
+        var borderClass = "p-2 border border-2 border-secondary pb-0";
+
+        @if (Model.AccessibleProjects.Last().Key != project.Key)
+        {
+            borderClass += " border-bottom-0";
+        }
+
+        <div class="@borderClass">
+            <div class="row">
+                <div class="col-auto">
+                    <h3>
+                        <a class="text-decoration-none" href="@ZincRoute.Project(project.Shorthand)">@project.Name</a>
+                    </h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-1">
+                    <p class="m-0 text-muted">@project.Shorthand</p>
+                </div>
+                <div class="col">
+                    <p>Owner: @((await Model.GetProjectCreator(project.Key)).Username)</p>
+                </div>
+            </div>
+
+            <div class="row">
+                @foreach (var label in project.Labels)
+                {
+                    <div class="col-auto">
+
+                        <p class="alert-light" ><img src="icons/tag.svg" /> @label</p>
+                    </div>
+                }
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <p class="text-truncate">@project.Description</p>
+                </div>
+            </div>
+
+            <div class="row">
+                @{ var ticketStats = await Model.GetTicketStats(project.Key); }
+                @foreach (var stat in ticketStats)
+                {
+                    @if (stat.Key == Vulpes.Zinc.Domain.Models.TicketStatus.Unknown)
+                    {
+                        continue;
+                    }
+
+                    var colClass = "pt-2 col border border-top-1 border-primary border-start-0 border-bottom-0 d-flex align-items-center justify-content-center";
+                    if (ticketStats.Last().Key == stat.Key)
+                    {
+                        colClass += " border-end-0 me-1";
+                    }
+                    else if (ticketStats.ElementAt(1).Key == stat.Key)
+                    {
+                        colClass += " ms-1";
+                    }
+                    
+                    <div class="@colClass">
+                            <p>@stat.Key: @stat.Value</p>
+                    </div>
+                }
+            </div>
+        </div>
     }
-</ul>
+</div>
