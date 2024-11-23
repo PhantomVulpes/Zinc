@@ -70,6 +70,13 @@ public class TicketModel : SecuredZincPageModel
             var labels = UpdatedLabels.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(label => label.Trim()).ToList();
             await mediator.ExecuteCommandAsync(new UpdateTicketLabelsCommand(labels, TicketKey, GetZincUserKey()));
         }
+        else if (HttpContext.Request.Form.ContainsKey(PostAction.DeleteTicket.ToString()))
+        {
+            await mediator.ExecuteCommandAsync(new DeleteTicketFromDatabaseCommand(TicketKey, GetZincUserKey()));
+
+            // The ticket is gone, so we have to go back to the project page now.
+            return this.RedirectWithZincRoutes(ZincRoute.Project(Project.Shorthand));
+        }
         else
         {
             await UpdateStatus();
@@ -104,6 +111,7 @@ public class TicketModel : SecuredZincPageModel
     {
         UpdateTicket,
         AddComment,
-        UpdateLabels
+        UpdateLabels,
+        DeleteTicket
     }
 }

@@ -8,7 +8,7 @@
         <div class="col">
             <h1>@Model.Ticket.Title</h1>
         </div>
-        <div class="col">
+        <div class="col-auto">
             <div class="btn-group float-right" role="group">
                 @foreach (var status in Enum.GetValues<TicketStatus>())
                 {
@@ -24,6 +24,11 @@
                     }
 
                     <input type="submit" class="btn btn-primary" asp-for=@Model.NewStatus value="@status.ToString()" />
+                }
+
+                @if(Model.Ticket.Status == TicketStatus.Cancelled)
+                {
+                    <input type="submit" class="btn btn-danger" name="@TicketModel.PostAction.DeleteTicket" value="Delete" />
                 }
             </div>
             <input type="hidden" name="@nameof(Model.TicketKey)" value="@Model.TicketKey" />
