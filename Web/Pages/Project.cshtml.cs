@@ -64,7 +64,8 @@ public class ProjectModel : SecuredZincPageModel
             TicketStatus.InProgress,
             TicketStatus.Open,
             TicketStatus.InReview,
-            TicketStatus.Complete
+            TicketStatus.Complete,
+            TicketStatus.Cancelled,
         ];
 
         public int Compare(TicketStatus x, TicketStatus y)
