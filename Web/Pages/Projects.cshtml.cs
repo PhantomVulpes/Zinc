@@ -23,17 +23,13 @@ public class ProjectsModel : SecuredZincPageModel
 
     public IEnumerable<Project> AccessibleProjects { get; private set; } = [];
 
-    public Dictionary<Guid, Dictionary<TicketStatus, int>> ProjectStats { get; private set; } = [];
-
     public async Task OnGetAsync()
     {
         AccessibleProjects = await mediator.RequestResponseAsync<GetProjectsForUser, IEnumerable<Project>>(new GetProjectsForUser(GetZincUserKey()));
-
-        foreach (var project in AccessibleProjects)
-        {
-            ProjectStats.Add(project.Key, await mediator.RequestResponseAsync<GetTicketStatsByProject, Dictionary<TicketStatus, int>>(new(project.Key, GetZincUserKey())));
-        }
     }
 
     public static Dictionary<string, string> GetBreadcrumbs() => IndexModel.GetBreadcrumbs().AddAndReturn(pageTitle, ZincRoute.Projects());
+
+    public async Task<Dictionary<TicketStatus, int>> GetTicketStats(Guid projectKey) =>
+        await mediator.RequestResponseAsync<GetTicketStatsByProject, Dictionary<TicketStatus, int>>(new(projectKey, GetZincUserKey()));
 }

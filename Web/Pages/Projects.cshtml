@@ -14,7 +14,7 @@
 <div>
     @foreach (var project in Model.AccessibleProjects)
     {
-        var borderClass = "p-2 border border-2 border-secondary";
+        var borderClass = "p-2 border border-2 border-secondary pb-0";
 
         @if (Model.AccessibleProjects.Last().Key != project.Key)
         {
@@ -46,10 +46,26 @@
             </div>
 
             <div class="row">
-                @foreach (var (status, number) in Model.ProjectStats[project.Key])
+                @{ var ticketStats = await Model.GetTicketStats(project.Key); }
+                @foreach (var stat in ticketStats)
                 {
-                    <div class="col">
-                        <p>@status: @number</p>
+                    @if (stat.Key == Vulpes.Zinc.Domain.Models.TicketStatus.Unknown)
+                    {
+                        continue;
+                    }
+
+                    var colClass = "pt-2 col border border-top-1 border-primary border-start-0 border-bottom-0 d-flex align-items-center justify-content-center";
+                    if (ticketStats.Last().Key == stat.Key)
+                    {
+                        colClass += " border-end-0 me-1";
+                    }
+                    else if (ticketStats.ElementAt(1).Key == stat.Key)
+                    {
+                        colClass += " ms-1";
+                    }
+                    
+                    <div class="@colClass">
+                            <p>@stat.Key: @stat.Value</p>
                     </div>
                 }
             </div>
