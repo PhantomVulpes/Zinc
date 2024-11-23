@@ -32,4 +32,7 @@ public class ProjectsModel : SecuredZincPageModel
 
     public async Task<Dictionary<TicketStatus, int>> GetTicketStats(Guid projectKey) =>
         await mediator.RequestResponseAsync<GetTicketStatsByProject, Dictionary<TicketStatus, int>>(new(projectKey, GetZincUserKey()));
+
+    public async Task<ZincUser> GetProjectCreator(Guid projectKey) =>
+        await mediator.RequestResponseAsync<GetUserByKey, ZincUser>(new(AccessibleProjects.First(project => project.Key == projectKey).CreatorKey));
 }

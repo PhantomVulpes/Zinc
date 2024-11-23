@@ -31,11 +31,11 @@
             </div>
 
             <div class="row">
-                <div class="col">
+                <div class="col-1">
                     <p class="m-0 text-muted">@project.Shorthand</p>
                 </div>
                 <div class="col">
-                    <p>Owner: </p>
+                    <p>Owner: @((await Model.GetProjectCreator(project.Key)).Username)</p>
                 </div>
             </div>
 

@@ -38,6 +38,7 @@ public static class ServiceCollectionExtensions
         .AddTransient<QueryHandler<GetTicketsUnderProject, IEnumerable<Ticket>>, GetTicketsUnderProjectHandler>()
         .AddTransient<QueryHandler<GetTicketByKey, Ticket>, GetTicketByKeyHandler>()
         .AddTransient<QueryHandler<GetTicketStatsByProject, Dictionary<TicketStatus, int>>, GetTicketStatsByProjectHandler>()
+        .AddTransient<QueryHandler<GetUserByKey, ZincUser>, GetUserByKeyHandler>()
         ;
 
     private static IServiceCollection InjectMediator(this IServiceCollection services)
@@ -63,6 +64,7 @@ public static class ServiceCollectionExtensions
                 .Register(provider.GetRequiredService<QueryHandler<GetTicketsUnderProject, IEnumerable<Ticket>>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetTicketByKey, Ticket>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetTicketStatsByProject, Dictionary<TicketStatus, int>>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetUserByKey, ZincUser>>())
                 ;
 
             return mediator;
