@@ -40,6 +40,16 @@
             </div>
 
             <div class="row">
+                @foreach (var label in project.Labels)
+                {
+                    <div class="col-auto">
+
+                        <p class="alert-light" ><img src="icons/tag.svg" /> @label</p>
+                    </div>
+                }
+            </div>
+
+            <div class="row">
                 <div class="col">
                     <p class="text-truncate">@project.Description</p>
                 </div>
