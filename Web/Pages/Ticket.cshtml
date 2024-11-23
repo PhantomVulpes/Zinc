@@ -108,7 +108,7 @@
                     <tr>
                         <td>@comment.Value</td>
                         <td>@(await Model.GetCommentAuthorName(comment.Author)) </td>
-                        <td>@comment.CreatedDate</td>
+                        <td>@comment.CreatedDate.ToLocalTime().ToString("hh:mm tt - yyyy/MM/dd")</td>
                     </tr>
                 }
             </tbody>
