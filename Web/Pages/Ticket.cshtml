@@ -10,9 +10,27 @@
         </div>
         <div class="col-auto">
             <div class="btn-group float-right" role="group">
+
+                @* If the ticket is Cancelled, we can delete it. *@
+                @if (Model.Ticket.Status == TicketStatus.Cancelled)
+                {
+                    <input type="submit" class="btn btn-danger" name="@TicketModel.PostAction.DeleteTicket" value="Delete" />
+                }
+
+                @* If the ticket is In Review or In Progress, the ticket can be cancelled. *@
+                @if (Model.Ticket.Status == TicketStatus.Cancelled)
+                {
+                    <input type="submit" class="btn btn-danger" asp-for=@Model.NewStatus value="@TicketStatus.Cancelled.ToString()" disabled />
+                }
+
+                @if (Model.Ticket.Status == TicketStatus.InReview || Model.Ticket.Status == TicketStatus.InProgress)
+                {
+                    <input type="submit" class="btn btn-primary" asp-for=@Model.NewStatus value="@TicketStatus.Cancelled.ToString()" />
+                }
+
                 @foreach (var status in Enum.GetValues<TicketStatus>())
                 {
-                    if (status == TicketStatus.Unknown)
+                    if (status == TicketStatus.Unknown || status == TicketStatus.Cancelled)
                     {
                         continue;
                     }
@@ -24,11 +42,6 @@
                     }
 
                     <input type="submit" class="btn btn-primary" asp-for=@Model.NewStatus value="@status.ToString()" />
-                }
-
-                @if(Model.Ticket.Status == TicketStatus.Cancelled)
-                {
-                    <input type="submit" class="btn btn-danger" name="@TicketModel.PostAction.DeleteTicket" value="Delete" />
                 }
             </div>
             <input type="hidden" name="@nameof(Model.TicketKey)" value="@Model.TicketKey" />
