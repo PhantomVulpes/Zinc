@@ -35,7 +35,7 @@ public class AddTicketCommentCommandHandler : CommandHandler<AddTicketCommentCom
         var ticket = await ticketRepository.GetAsync(command.TicketKey);
         var project = await projectRepository.GetAsync(ticket.ProjectKey);
 
-        if (project.CreatorKey == command.UserKey || project.AllowedUserKeys.Contains(command.UserKey))
+        if (project.UserIsAllowed(command.UserKey))
         {
             return AccessResult.Success();
         }

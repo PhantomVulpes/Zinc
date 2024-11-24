@@ -24,17 +24,6 @@ public record Ticket : AggregateRoot
 
     public TicketStatus Status { get; init; } = TicketStatus.Unknown;
 
-    public Ticket AddComment(string comment, ZincUser author)
-    {
-        var newComment = Comment.Default with
-        {
-            Value = comment,
-            Author = author.Key,
-        };
-
-        return AddComment(newComment);
-    }
-
     public Ticket AddComment(Comment comment)
     {
         var comments = Comments.Append(comment);
