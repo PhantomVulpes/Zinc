@@ -7,7 +7,12 @@ public static class TestHelper
     /// <summary>
     /// Builds the usual repositories and fills them with some test data.
     /// </summary>
-    public static (TestDataRepository<Ticket> testTicketRepository, TestDataRepository<Project> testProjectRepository) CreateTestDataRepositories()
+    public static (TestDataRepository<Ticket> testTicketRepository, TestDataRepository<Project> testProjectRepository) CreateTestDataRepositories() => CreateTestDataRepositories(TicketStatus.InReview);
+
+    /// <summary>
+    /// Builds the usual repositories and fills them with some test data.
+    /// </summary>
+    public static (TestDataRepository<Ticket> testTicketRepository, TestDataRepository<Project> testProjectRepository) CreateTestDataRepositories(TicketStatus ticketStatus)
     {
         var zincUser = ZincUser.Default with
         {
@@ -30,6 +35,7 @@ public static class TestHelper
             Description = "Test Ticket Description",
             ProjectKey = project.Key,
             ReporterKey = zincUser.Key,
+            Status = ticketStatus
         };
 
         testProjectRepository.Models.Add(project.Key, project);

@@ -15,7 +15,7 @@ public class DeleteTicketFromDatabaseCommandTests
 
     public DeleteTicketFromDatabaseCommandTests()
     {
-        (ticketRepository, projectRepository) = TestHelper.CreateTestDataRepositories();
+        (ticketRepository, projectRepository) = TestHelper.CreateTestDataRepositories(TicketStatus.Cancelled);
 
         underTest = new DeleteTicketFromDatabaseCommandHandler(ticketRepository, projectRepository);
     }
@@ -28,6 +28,17 @@ public class DeleteTicketFromDatabaseCommandTests
         await underTest.ExecuteAsync(Command(ticketRepository.Models.First().Key, ticketRepository.PreparedUser.Key));
 
         Assert.IsTrue(ticketRepository.Deleted.Any(), "Ticket was not deleted.");
+    }
+
+    [TestMethod]
+    public async Task NonRequestedTicketWasNotDeleted()
+    {
+        var ticket = ticketRepository.Models.First().Value with { Key = Guid.NewGuid() };
+        ticketRepository.Models.Add(ticket.Key, ticket);
+
+        await underTest.ExecuteAsync(Command(ticketRepository.Models.First().Key, ticketRepository.PreparedUser.Key));
+
+        Assert.IsFalse(ticketRepository.Deleted.Any(deleted => deleted.Key == ticket.Key), "Ticket was deleted.");
     }
 
     [TestMethod]
