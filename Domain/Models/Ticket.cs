@@ -1,4 +1,6 @@
-﻿namespace Vulpes.Zinc.Domain.Models;
+﻿using Vulpes.Electrum.Core.Domain.Security;
+
+namespace Vulpes.Zinc.Domain.Models;
 public record Ticket : AggregateRoot
 {
     // TODO: Add convention for null serialization from database. Changed name of thing from database, now it breaks unless I make a new one.
@@ -34,6 +36,15 @@ public record Ticket : AggregateRoot
     }
 
     // TODO: Add attachments (requires Duralumin)
+
+    protected override ElectrumValidationResult InternalValidate()
+    {
+        var internalResult = base.InternalValidate();
+        return ElectrumValidationResult.Verify(() => !string.IsNullOrEmpty(Title), "Title is required",
+                ElectrumValidationResult.Verify(() => ReporterKey != Guid.Empty, "Reporter is required",
+                    ElectrumValidationResult.Verify(() => ProjectKey != Guid.Empty, "Project is required",
+                        ElectrumValidationResult.Verify(() => Status != TicketStatus.Unknown, "Status is required", internalResult))));
+    }
 }
 
 public enum TicketRelationship
