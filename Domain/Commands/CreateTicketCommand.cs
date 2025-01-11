@@ -30,6 +30,8 @@ public class CreateTicketCommandHandler : CommandHandler<CreateTicketCommand>
             Status = project.DefaultTicketStatus,
         };
 
+        ticket.ValidateOrThrow();
+
         await ticketRepository.InsertAsync(ticket);
     }
 

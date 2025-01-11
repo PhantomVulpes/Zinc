@@ -27,7 +27,7 @@ public class DeleteTicketFromDatabaseCommandHandler : CommandHandler<DeleteTicke
         var ticket = await ticketRepository.GetAsync(command.TicketKey);
         var project = await projectRepository.GetAsync(ticket.ProjectKey);
 
-        if (!project.AllowedUserKeys.Contains(command.UserKey) || project.CreatorKey != command.UserKey)
+        if (!project.UserIsAllowed(command.UserKey))
         {
             return AccessResult.Fail($"User {command.UserKey} does not have access to project {project.ToLogName()}.");
         }
