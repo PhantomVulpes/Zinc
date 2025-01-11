@@ -19,7 +19,7 @@ public record ZincRoute(string PageName, object RouteParameters, string Path)
 
     // User related
     public static ZincRoute Projects() => new("Projects", new { }, "/projects");
-    public static ZincRoute CreateProject() => new("CreateProject", new { }, "/create-project");
+    public static ZincRoute StartProject() => new("CreateProject", new { }, "/start-project");
     public static ZincRoute Project(string projectShorthand) => new("Project", new { ProjectShorthand = projectShorthand }, $"/projects/{projectShorthand}");
     public static ZincRoute CreateTicket(string projectShorthand) => new("CreateTicket", new { ProjectShorthand = projectShorthand }, $"/projects/{projectShorthand}/create-ticket");
     public static ZincRoute Ticket(string projectShorthand, Guid ticketKey) => new("Ticket", new { ProjectShorthand = projectShorthand, TicketKey = ticketKey }, $"/projects/{projectShorthand}/{ticketKey}");
