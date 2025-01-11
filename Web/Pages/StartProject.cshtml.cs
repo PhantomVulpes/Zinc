@@ -3,19 +3,20 @@ using Vulpes.Electrum.Core.Domain.Extensions;
 using Vulpes.Electrum.Core.Domain.Mediation;
 using Vulpes.Zinc.Domain.Commands;
 using Vulpes.Zinc.Web.Models;
+using Vulpes.Zinc.Web.Routing;
 
 namespace Vulpes.Zinc.Web.Pages;
 
-public class CreateProjectModel : SecuredZincPageModel
+public class StartProjectModel : SecuredZincPageModel
 {
     private readonly IMediator mediator;
 
-    public CreateProjectModel(IMediator mediator)
+    public StartProjectModel(IMediator mediator)
     {
         this.mediator = mediator;
     }
 
-    public static readonly string pageTitle = "Create Project";
+    public static readonly string pageTitle = "Start Project";
     public override string PageTitle => pageTitle;
 
     public override Dictionary<string, string> Breadcrumbs => GetBreadcrumbs();
@@ -47,5 +48,5 @@ public class CreateProjectModel : SecuredZincPageModel
         return RedirectToPage("/index");    // TODO: These paths need to be kept somewhere.
     }
 
-    public static Dictionary<string, string> GetBreadcrumbs() => IndexModel.GetBreadcrumbs().AddAndReturn(pageTitle, "/create-project");
+    public static Dictionary<string, string> GetBreadcrumbs() => IndexModel.GetBreadcrumbs().AddAndReturn(pageTitle, ZincRoute.StartProject());
 }
