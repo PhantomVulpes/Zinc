@@ -1,5 +1,5 @@
-using Vulpes.Electrum.Core.Domain.Extensions;
-using Vulpes.Electrum.Core.Domain.Mediation;
+using Vulpes.Electrum.Domain.Extensions;
+using Vulpes.Electrum.Domain.Mediation;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Queries;
 using Vulpes.Zinc.Web.Models;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using Vulpes.Electrum.Core.Domain.Extensions;
+using Vulpes.Electrum.Domain.Extensions;
 using Vulpes.Zinc.Domain.Data;
 using Vulpes.Zinc.Domain.Logging;
 using Vulpes.Zinc.Domain.Models;
@@ -36,9 +36,9 @@ public class MongoRepository<TAggregateRoot> : IDataRepository<TAggregateRoot>
 
     public Task<TAggregateRoot> GetAsync(Guid key)
     {
-        var result = mongoProvider.GetQuery<TAggregateRoot>(CqrsType.Query).Where(record => record.Key.Equals(key)).ConcealFirst();
+        var result = mongoProvider.GetQuery<TAggregateRoot>(CqrsType.Query).Where(record => record.Key.Equals(key)).FirstOrPerhaps();
 
-        return result.RevealOrHoax($"Could not find object {typeof(TAggregateRoot).Name} with key {key}.").FromResult();
+        return result.ElseThrow($"Could not find object {typeof(TAggregateRoot).Name} with key {key}.").FromResult();
     }
 
     public async Task InsertAsync(TAggregateRoot record)

@@ -1,6 +1,6 @@
-﻿using Vulpes.Electrum.Core.Domain.Extensions;
-using Vulpes.Electrum.Core.Domain.Querying;
-using Vulpes.Electrum.Core.Domain.Security;
+﻿using Vulpes.Electrum.Domain.Extensions;
+using Vulpes.Electrum.Domain.Querying;
+using Vulpes.Electrum.Domain.Security;
 using Vulpes.Zinc.Domain.Data;
 using Vulpes.Zinc.Domain.Models;
 
@@ -24,15 +24,15 @@ public class GetUserByLoginCredentialsHandler : QueryHandler<GetUserByLoginCrede
     protected override async Task<ZincUser> InternalRequestAsync(GetUserByLoginCredentials query)
     {
         var allQuery = (await queryProvider.BeginQueryAsync()).ToList();
-        var userRelic = (await queryProvider.BeginQueryAsync())
+        var userPerhaps = (await queryProvider.BeginQueryAsync())
             .Where(user => user.Username.ToLower() == query.UsernameOrEmail.ToLower() || user.Email.ToLower() == query.UsernameOrEmail.ToLower())
-            .ConcealFirst()
+            .FirstOrPerhaps()
             ;
 
         // TODO: Apparently IsWorthless doesn't work right. Who wrote that unit test!?
         // ThrowIfInvalidCredentials(!userRelic.IsWorthless);
 
-        var user = userRelic.RevealOrHoax();
+        var user = userPerhaps.ElseThrow();
         var passwordCorrect = knoxHasher.CompareHash(user.PasswordHash, query.Password);
 
         ThrowIfInvalidCredentials(passwordCorrect);

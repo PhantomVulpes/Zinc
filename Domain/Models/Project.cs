@@ -1,4 +1,4 @@
-﻿using Vulpes.Electrum.Core.Domain.Security;
+﻿using Vulpes.Electrum.Domain.Security;
 
 namespace Vulpes.Zinc.Domain.Models;
 public record Project : AggregateRoot

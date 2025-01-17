@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Vulpes.Electrum.Core.Domain.Extensions;
-using Vulpes.Electrum.Core.Domain.Security;
+using Vulpes.Electrum.Domain.Extensions;
+using Vulpes.Electrum.Domain.Security;
 using Vulpes.Zinc.Domain.Data;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Security;

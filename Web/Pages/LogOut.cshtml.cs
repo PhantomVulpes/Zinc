@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Vulpes.Electrum.Core.Domain.Extensions;
+using Vulpes.Electrum.Domain.Extensions;
 using Vulpes.Zinc.Web.Models;
+using Vulpes.Zinc.Web.Routing;
 
 namespace Vulpes.Zinc.Web.Pages;
 
@@ -19,5 +20,5 @@ public class LogOutModel : SecuredZincPageModel
         return RedirectToPage("/index");
     }
 
-    public static Dictionary<string, string> GetBreadcrumbs() => IndexModel.GetBreadcrumbs().AddAndReturn(pageTitle, "/log-out");
+    public static Dictionary<string, string> GetBreadcrumbs() => IndexModel.GetBreadcrumbs().AddAndReturn(pageTitle, ZincRoute.LogOut().Path);
 }

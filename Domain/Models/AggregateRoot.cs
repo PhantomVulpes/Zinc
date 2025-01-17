@@ -1,5 +1,5 @@
-﻿using Vulpes.Electrum.Core.Domain.Exceptions;
-using Vulpes.Electrum.Core.Domain.Security;
+﻿using Vulpes.Electrum.Domain.Exceptions;
+using Vulpes.Electrum.Domain.Security;
 
 namespace Vulpes.Zinc.Domain.Models;
 public abstract record AggregateRoot

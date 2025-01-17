@@ -1,4 +1,4 @@
-﻿using Vulpes.Electrum.Core.Domain.Exceptions;
+﻿using Vulpes.Electrum.Domain.Exceptions;
 using Vulpes.Zinc.Domain.Commands;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Test.Doubles.Domain.Data;

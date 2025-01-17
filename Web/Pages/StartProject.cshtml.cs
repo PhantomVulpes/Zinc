@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Vulpes.Electrum.Core.Domain.Extensions;
-using Vulpes.Electrum.Core.Domain.Mediation;
+using Vulpes.Electrum.Domain.Extensions;
+using Vulpes.Electrum.Domain.Mediation;
 using Vulpes.Zinc.Domain.Commands;
 using Vulpes.Zinc.Web.Models;
 using Vulpes.Zinc.Web.Routing;

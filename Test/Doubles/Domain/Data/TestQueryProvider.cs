@@ -1,4 +1,4 @@
-﻿using Vulpes.Electrum.Core.Domain.Extensions;
+﻿using Vulpes.Electrum.Domain.Extensions;
 using Vulpes.Zinc.Domain.Data;
 
 namespace Vulpes.Zinc.Test.Doubles.Domain.Data;
