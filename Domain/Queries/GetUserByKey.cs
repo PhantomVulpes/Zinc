@@ -1,4 +1,4 @@
-﻿using Vulpes.Electrum.Core.Domain.Querying;
+﻿using Vulpes.Electrum.Domain.Querying;
 using Vulpes.Zinc.Domain.Data;
 using Vulpes.Zinc.Domain.Models;
 

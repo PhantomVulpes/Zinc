@@ -1,4 +1,5 @@
-﻿using Vulpes.Electrum.Core.Domain.Querying;
+﻿using Vulpes.Electrum.Domain.Extensions;
+using Vulpes.Electrum.Domain.Querying;
 using Vulpes.Zinc.Domain.Data;
 using Vulpes.Zinc.Domain.Models;
 
@@ -15,8 +16,7 @@ public class GetProjectByShorthandHandler : QueryHandler<GetProjectByShorthand, 
 
     protected override async Task<Project> InternalRequestAsync(GetProjectByShorthand query)
     {
-        // TODO: Make sure relics are used to return an empty project. Don't think I have the correct extension in Electrum yet.
-        var result = (await queryProvider.BeginQueryAsync()).FirstOrDefault(project => project.Shorthand == query.Shorthand.ToUpper());
-        return result;
+        var result = (await queryProvider.BeginQueryAsync()).FirstOrPerhaps(project => project.Shorthand == query.Shorthand.ToUpper());
+        return result.ElseThrow();
     }
 }

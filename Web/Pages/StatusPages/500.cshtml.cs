@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Http.Extensions;
-using Vulpes.Electrum.Core.Domain.Extensions;
+using Vulpes.Electrum.Domain.Extensions;
 using Vulpes.Zinc.Web.Middleware;
 using Vulpes.Zinc.Web.Models;
 

@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Vulpes.Electrum.Core.Domain.Extensions;
-using Vulpes.Electrum.Core.Domain.Mediation;
+using Vulpes.Electrum.Domain.Extensions;
+using Vulpes.Electrum.Domain.Mediation;
 using Vulpes.Zinc.Domain.Logging;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Queries;
 using Vulpes.Zinc.Web.Middleware;
 using Vulpes.Zinc.Web.Models;
+using Vulpes.Zinc.Web.Routing;
 
 namespace Vulpes.Zinc.Web.Pages;
 
@@ -69,5 +70,5 @@ public class LogInModel : ZincPageModel
         logger.LogInformation($"{LogTags.Failure} Failed to execute request to {context.Request.Path}. {exception.Message}");
     }
 
-    public static Dictionary<string, string> GetBreadcrumbs() => IndexModel.GetBreadcrumbs().AddAndReturn(pageTitle, "/log-in");
+    public static Dictionary<string, string> GetBreadcrumbs() => IndexModel.GetBreadcrumbs().AddAndReturn(pageTitle, ZincRoute.LogIn().Path);
 }

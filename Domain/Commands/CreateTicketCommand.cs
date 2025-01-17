@@ -1,6 +1,6 @@
-﻿using Vulpes.Electrum.Core.Domain.Commanding;
-using Vulpes.Electrum.Core.Domain.Extensions;
-using Vulpes.Electrum.Core.Domain.Security;
+﻿using Vulpes.Electrum.Domain.Commanding;
+using Vulpes.Electrum.Domain.Extensions;
+using Vulpes.Electrum.Domain.Security;
 using Vulpes.Zinc.Domain.Data;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Queries;
@@ -20,7 +20,7 @@ public class CreateTicketCommandHandler : CommandHandler<CreateTicketCommand>
 
     protected override async Task InternalExecuteAsync(CreateTicketCommand command)
     {
-        var project = (await queryProvider.BeginQueryAsync()).Where(project => project.Key == command.ProjectKey).ConcealFirst().RevealOrHoax();
+        var project = (await queryProvider.BeginQueryAsync()).Where(project => project.Key == command.ProjectKey).FirstOrPerhaps().ElseThrow();
         var ticket = Ticket.Default with
         {
             Title = command.Title,

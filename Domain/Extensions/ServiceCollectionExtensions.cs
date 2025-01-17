@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Vulpes.Electrum.Core.Domain.Commanding;
-using Vulpes.Electrum.Core.Domain.Mediation;
-using Vulpes.Electrum.Core.Domain.Querying;
+using Vulpes.Electrum.Domain.Commanding;
+using Vulpes.Electrum.Domain.Mediation;
+using Vulpes.Electrum.Domain.Querying;
 using Vulpes.Zinc.Domain.Commands;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Queries;

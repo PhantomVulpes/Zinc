@@ -1,6 +1,6 @@
-﻿using Vulpes.Electrum.Core.Domain.Exceptions;
-using Vulpes.Electrum.Core.Domain.Querying;
-using Vulpes.Electrum.Core.Domain.Security;
+﻿using Vulpes.Electrum.Domain.Exceptions;
+using Vulpes.Electrum.Domain.Querying;
+using Vulpes.Electrum.Domain.Security;
 using Vulpes.Zinc.Domain.Data;
 using Vulpes.Zinc.Domain.Models;
 
