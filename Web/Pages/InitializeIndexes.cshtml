@@ -5,3 +5,13 @@
 
 <h1>Initialize</h1>
 <p>Congratulations on being an admin.</p>
+
+@foreach (var index in Model.Indexes)
+{
+    <div class="row">
+        <div class="col">
+            <h2>@index.Name</h2>
+            <p>@(await index.ExistsAsync())</p>
+        </div>
+    </div>
+}
