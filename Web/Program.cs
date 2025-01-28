@@ -1,3 +1,4 @@
+using Vulpes.Zinc.Domain.Data;
 using Vulpes.Zinc.Domain.Extensions;
 using Vulpes.Zinc.External.Extensions;
 using Vulpes.Zinc.External.Mongo;
@@ -31,6 +32,7 @@ public class Program
         _ = builder.Services
             .InjectDomain()
             .InjectExternal()
+            .InjectEnumerableServices<IIndexDefinition>("Vulpes.Zinc.Domain", "Vulpes.Zinc.External")
             .AddMiddlewareServices()
             ;
 

@@ -1,5 +1,6 @@
 using Vulpes.Electrum.Domain.Extensions;
 using Vulpes.Electrum.Domain.Mediation;
+using Vulpes.Zinc.Domain.Data;
 using Vulpes.Zinc.Domain.Models;
 using Vulpes.Zinc.Domain.Queries;
 using Vulpes.Zinc.Domain.Security;
@@ -13,10 +14,12 @@ public class InitializeIndexesModel : SecuredZincPageModel
     public override string PageTitle => "Initialize Indexes";
 
     public ZincUser User { get; private set; } = ZincUser.Empty;
+    public IEnumerable<IIndexDefinition> Indexes { get; private set; } = [];
 
-    public InitializeIndexesModel(IMediator mediator)
+    public InitializeIndexesModel(IMediator mediator, IEnumerable<IIndexDefinition> indexes)
     {
         this.mediator = mediator;
+        Indexes = indexes;
     }
 
     public async Task OnGetAsync()

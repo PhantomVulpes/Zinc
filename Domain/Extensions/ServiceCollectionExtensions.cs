@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 using Vulpes.Electrum.Domain.Commanding;
 using Vulpes.Electrum.Domain.Mediation;
 using Vulpes.Electrum.Domain.Querying;
@@ -15,6 +16,21 @@ public static class ServiceCollectionExtensions
         .InjectQueries()
         .InjectMediator()
         ;
+
+    public static IServiceCollection InjectEnumerableServices<TEnumerableCollection>(this IServiceCollection seriviceCollection, params string[] namespaces)
+    {
+        foreach (var registeredNamespace in namespaces)
+        {
+            var assembly = Assembly.Load(registeredNamespace);
+
+            foreach (var type in assembly.GetTypes().Where(type => typeof(TEnumerableCollection).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract))
+            {
+                seriviceCollection.AddTransient(typeof(TEnumerableCollection), type);
+            }
+        }
+
+        return seriviceCollection;
+    }
 
     private static IServiceCollection AutoInjectServices(this IServiceCollection services) =>
         // TODO: Implement this.
