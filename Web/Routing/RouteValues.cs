@@ -18,6 +18,7 @@ public record ZincRoute(string PageName, object RouteParameters, string Path)
     public static ZincRoute LogOut() => new("LogOut", new { }, "/log-out");
 
     // User related
+    public static ZincRoute InitializeIndexes() => new("InitializeIndexes", new { }, "/admin/initialize-indexes");
     public static ZincRoute Projects() => new("Projects", new { }, "/projects");
     public static ZincRoute StartProject() => new("CreateProject", new { }, "/start-project");
     public static ZincRoute Project(string projectShorthand) => new("Project", new { ProjectShorthand = projectShorthand }, $"/projects/{projectShorthand}");
