@@ -50,5 +50,6 @@ public class InitializeIndexesModel : SecuredZincPageModel
     {
         User = await mediator.RequestResponseAsync<GetUserByKey, ZincUser>(new(GetZincUserKey()));
     }
+    
     public override Dictionary<string, string> Breadcrumbs => IndexModel.GetBreadcrumbs().AddAndReturn(PageTitle, "/InitializeIndexes");
 }
