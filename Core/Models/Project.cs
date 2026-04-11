@@ -1,5 +1,4 @@
 using Vulpes.Electrum.Domain.Models;
-using Vulpes.Electrum.Domain.Security;
 using Vulpes.Electrum.Domain.Validation;
 using Vulpes.Zinc.Core.Logging;
 
@@ -27,9 +26,6 @@ public record Project : AggregateRoot
     public IEnumerable<Ticket> Tickets { get; init; } = [];
 
     public IEnumerable<string> Labels { get; init; } = [];
-
-    public AccessResult UserIsAllowed(Guid userKey) => CreatorKey == userKey || AllowedUserKeys.Contains(userKey) ? AccessResult.Success() : AccessResult.Fail($"User {userKey} is not allowed to access project {Name}.");
-    public AccessResult UserIsAllowed(RegisteredUser user) => UserIsAllowed(user.Key);
 
     public AggregateRootValidationModel<Project> Validate()
     {

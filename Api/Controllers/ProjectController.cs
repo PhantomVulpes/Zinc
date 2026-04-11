@@ -37,7 +37,18 @@ public class ProjectController : ZincController
     [ProducesResponseType(typeof(Project), StatusCodes.Status200OK)]
     public async Task<ActionResult<Project>> GetProjectByShorthandAsync(string projectShorthand)
     {
-        var projects = await mediator.RequestResponseAsync(new GetProjectByShorthandQuery(projectShorthand, RegisteredUser.Key));
-        return Ok(projects);
+        var project = await mediator.RequestResponseAsync(new GetProjectByShorthandQuery(projectShorthand, RegisteredUser.Key));
+        return Ok(project);
+    }
+
+    [HttpPost("projects/{projectShorthand}/create-ticket")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<Project>> CreateNewTicketAsync(string projectShorthand, CreateTicketRequest request)
+    {
+        var project = await mediator.RequestResponseAsync(new GetProjectByShorthandQuery(projectShorthand, RegisteredUser.Key));
+
+        await mediator.ExecuteCommandAsync(request.ToCommand(project.Key, RegisteredUser.Key));
+
+        return Ok();
     }
 }

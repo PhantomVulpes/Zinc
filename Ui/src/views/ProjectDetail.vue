@@ -25,10 +25,17 @@
         <!-- Project Details -->
         <div v-if="!isLoading && project" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-lavender-200 p-8">
           <!-- Project Header -->
-          <div class="mb-6">
+          <div class="mb-6 flex items-start justify-between">
             <h1 class="text-4xl font-bold text-purple-900 mb-2">
               {{ project.name }} <span class="text-2xl text-purple-600">({{ project.shorthand }})</span>
             </h1>
+            <Button
+              label="Create Ticket"
+              icon="pi pi-plus"
+              severity="primary"
+              @click="router.push(`/projects/${project.shorthand}/create-ticket`)"
+              class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2"
+            />
           </div>
 
           <!-- Description -->
