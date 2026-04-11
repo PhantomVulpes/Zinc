@@ -60,4 +60,13 @@ public class ProjectController : ZincController
 
         return Ok();
     }
+
+    [HttpPost("ticket/edit")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> EditTicketAsync(EditTicketRequest request)
+    {
+        await mediator.ExecuteCommandAsync(request.ToCommand(RegisteredUser.Key));
+
+        return Ok();
+    }
 }

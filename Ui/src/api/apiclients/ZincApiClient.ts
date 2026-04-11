@@ -231,6 +231,44 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
+    edit(body: EditTicketRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/project/ticket/edit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processEdit(_response);
+        });
+    }
+
+    protected processEdit(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
     register(body: RegisterNewUserRequest | undefined): Promise<string> {
         let url_ = this.baseUrl + "/api/user/register";
         url_ = url_.replace(/[?&]$/, "");
@@ -523,6 +561,73 @@ export class CreateTicketRequest implements ICreateTicketRequest {
 export interface ICreateTicketRequest {
     title?: string | null;
     description?: string | null;
+}
+
+export class EditTicketRequest implements IEditTicketRequest {
+    projectKey?: string;
+    ticketIndex?: number;
+    title?: string | null;
+    description?: string | null;
+    labels?: string[] | null;
+    status?: TicketStatus;
+
+    constructor(data?: IEditTicketRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.projectKey = _data["projectKey"] !== undefined ? _data["projectKey"] : null as any;
+            this.ticketIndex = _data["ticketIndex"] !== undefined ? _data["ticketIndex"] : null as any;
+            this.title = _data["title"] !== undefined ? _data["title"] : null as any;
+            this.description = _data["description"] !== undefined ? _data["description"] : null as any;
+            if (Array.isArray(_data["labels"])) {
+                this.labels = [] as any;
+                for (let item of _data["labels"])
+                    this.labels!.push(item);
+            }
+            else {
+                this.labels = null as any;
+            }
+            this.status = _data["status"] !== undefined ? _data["status"] : null as any;
+        }
+    }
+
+    static fromJS(data: any): EditTicketRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditTicketRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["projectKey"] = this.projectKey !== undefined ? this.projectKey : null as any;
+        data["ticketIndex"] = this.ticketIndex !== undefined ? this.ticketIndex : null as any;
+        data["title"] = this.title !== undefined ? this.title : null as any;
+        data["description"] = this.description !== undefined ? this.description : null as any;
+        if (Array.isArray(this.labels)) {
+            data["labels"] = [];
+            for (let item of this.labels)
+                data["labels"].push(item);
+        }
+        data["status"] = this.status !== undefined ? this.status : null as any;
+        return data;
+    }
+}
+
+export interface IEditTicketRequest {
+    projectKey?: string;
+    ticketIndex?: number;
+    title?: string | null;
+    description?: string | null;
+    labels?: string[] | null;
+    status?: TicketStatus;
 }
 
 export class LoginRequest implements ILoginRequest {

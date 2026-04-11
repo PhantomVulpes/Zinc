@@ -22,6 +22,7 @@ public static class MediationRegistration
         .AddTransient<CommandHandler<CreateNewProjectCommand>, CreateNewProjectCommandHandler>()
         .AddTransient<CommandHandler<CreateTicketCommand>, CreateTicketCommandHandler>()
         .AddTransient<CommandHandler<AddCommentToTicketCommand>, AddCommentToTicketCommandHandler>()
+        .AddTransient<CommandHandler<EditTicketCommand>, EditTicketCommandHandler>()
         ;
 
     private static IServiceCollection InjectQueries(this IServiceCollection services) => services
@@ -44,6 +45,7 @@ public static class MediationRegistration
                 .Register(provider.GetRequiredService<CommandHandler<CreateNewProjectCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<CreateTicketCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<AddCommentToTicketCommand>>())
+                .Register(provider.GetRequiredService<CommandHandler<EditTicketCommand>>())
                 ;
 
             _ = mediator

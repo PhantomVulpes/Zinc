@@ -3,7 +3,7 @@
     <div class="container mx-auto px-4 py-12">
       <div class="max-w-2xl mx-auto">
         <!-- Back Button -->
-        <Button
+        <ZincButton
           label="Back to Project"
           icon="pi pi-arrow-left"
           severity="secondary"
@@ -63,22 +63,20 @@
 
               <!-- Action Buttons -->
               <div class="flex gap-3 mt-2">
-                <Button
+                <ZincButton
                   type="submit"
                   label="Create Ticket"
                   icon="pi pi-check"
                   :loading="isLoading"
                   severity="primary"
-                  class="flex-1"
                 />
-                <Button
+                <ZincButton
                   type="button"
                   label="Cancel"
                   icon="pi pi-times"
                   severity="secondary"
                   :disabled="isLoading"
                   @click="router.back()"
-                  class="flex-1"
                 />
               </div>
             </form>
@@ -93,10 +91,10 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import Card from 'primevue/card'
-import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Message from 'primevue/message'
+import ZincButton from '@/components/ZincButton.vue'
 import { createAuthenticatedClient } from '@/api/apiClient'
 import { CreateTicketRequest } from '@/api/apiclients/ZincApiClient'
 

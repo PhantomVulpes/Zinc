@@ -46,13 +46,12 @@
           </div>
 
           <!-- Submit Button -->
-          <Button
+          <ZincButton
             type="submit"
             label="Sign In"
             icon="pi pi-sign-in"
             :loading="isLoading"
             severity="primary"
-            class="w-full mt-2"
           />
 
           <!-- Register Link -->
@@ -75,10 +74,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Card from 'primevue/card'
-import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Message from 'primevue/message'
+import ZincButton from '@/components/ZincButton.vue'
 import { LoginUser } from '@/api/User/LoginUserCommand'
 import { useAuth } from '@/services/auth'
 

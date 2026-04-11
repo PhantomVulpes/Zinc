@@ -3,7 +3,7 @@
     <div class="container mx-auto px-4 py-12">
       <div class="max-w-4xl mx-auto">
         <!-- Back Button -->
-        <Button
+        <ZincButton
           label="Back to Project"
           icon="pi pi-arrow-left"
           severity="secondary"
@@ -26,22 +26,81 @@
         <div v-if="!isLoading && ticket" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-lavender-200 p-8">
           <!-- Ticket Header -->
           <div class="mb-6">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="text-purple-600 font-semibold text-lg">{{ projectShorthand }}-{{ ticket.index }}</span>
-              <span 
-                class="px-3 py-1 rounded-full text-sm font-medium"
-                :class="getStatusClass(ticket.status)"
-              >
-                {{ formatTicketStatus(ticket.status) }}
-              </span>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <span class="text-purple-600 font-semibold text-lg">{{ projectShorthand }}-{{ ticket.index }}</span>
+              </div>
+              
+              <!-- Edit/Cancel/Save Buttons -->
+              <div class="flex gap-2">
+                <ZincButton
+                  v-if="!isEditMode"
+                  label="Edit"
+                  icon="pi pi-pencil"
+                  @click="enterEditMode"
+                  severity="primary"
+                />
+                <ZincButton
+                  v-if="isEditMode"
+                  label="Cancel"
+                  icon="pi pi-times"
+                  severity="secondary"
+                  @click="cancelEdit"
+                  :disabled="isSubmitting"
+                />
+                <ZincButton
+                  v-if="isEditMode"
+                  label="Save"
+                  icon="pi pi-check"
+                  @click="saveEdit"
+                  :loading="isSubmitting"
+                  :disabled="isSubmitting"
+                  severity="primary"
+                />
+              </div>
             </div>
-            <h1 class="text-4xl font-bold text-purple-900">{{ ticket.title }}</h1>
+            
+            <!-- Title (editable or display) -->
+            <div v-if="isEditMode" class="mb-4">
+              <InputText
+                v-model="editedTitle"
+                class="w-full text-3xl font-bold p-3 border border-lavender-300 rounded-lg"
+                placeholder="Ticket title"
+              />
+            </div>
+            <h1 v-else class="text-4xl font-bold text-purple-900 mb-4">{{ ticket.title }}</h1>
+            
+            <!-- Status Display - All Statuses -->
+            <div class="flex flex-wrap gap-2">
+              <button
+                v-for="status in getAvailableStatuses()"
+                :key="status"
+                @click="isEditMode ? editedStatus = status : null"
+                :disabled="!isEditMode"
+                :class="[
+                  'px-4 py-2 rounded-full text-sm font-medium transition-all',
+                  isEditMode ? 'cursor-pointer hover:scale-105' : 'cursor-default',
+                  (isEditMode ? editedStatus : ticket.status) === status
+                    ? getStatusClass(status) + ' ring-2 ring-purple-500 ring-offset-2'
+                    : 'bg-gray-100 text-gray-500'
+                ]"
+              >
+                {{ formatTicketStatus(status) }}
+              </button>
+            </div>
           </div>
 
           <!-- Description -->
           <div class="mb-6">
             <h2 class="text-xl font-semibold text-purple-900 mb-2">Description</h2>
-            <p class="text-purple-700 leading-relaxed whitespace-pre-wrap">{{ ticket.description || 'No description provided' }}</p>
+            <Textarea
+              v-if="isEditMode"
+              v-model="editedDescription"
+              rows="6"
+              class="w-full p-3 border border-lavender-300 rounded-lg"
+              placeholder="Ticket description"
+            />
+            <p v-else class="text-purple-700 leading-relaxed whitespace-pre-wrap">{{ ticket.description || 'No description provided' }}</p>
           </div>
 
           <!-- Ticket Information -->
@@ -68,16 +127,31 @@
           <!-- Labels -->
           <div class="mb-6">
             <h2 class="text-xl font-semibold text-purple-900 mb-3">Labels</h2>
-            <div v-if="ticket.labels && ticket.labels.length > 0" class="flex flex-wrap gap-2">
-              <span
-                v-for="label in ticket.labels"
-                :key="label"
-                class="bg-lavender-100 text-purple-800 px-4 py-2 rounded-full text-sm font-medium"
-              >
-                <i class="pi pi-tag mr-1"></i>{{ label }}
-              </span>
+            
+            <!-- Edit mode: text input for labels -->
+            <div v-if="isEditMode">
+              <InputText
+                :model-value="editedLabels.join(', ')"
+                @update:model-value="editedLabels = ($event || '').split(',').map((l: string) => l.trim()).filter((l: string) => l)"
+                class="w-full p-3 border border-lavender-300 rounded-lg"
+                placeholder="Enter labels separated by commas"
+              />
+              <p class="text-sm text-purple-600 mt-1">Separate multiple labels with commas</p>
             </div>
-            <p v-else class="text-purple-500 italic">No labels assigned to this ticket</p>
+            
+            <!-- Display mode -->
+            <div v-else>
+              <div v-if="ticket.labels && ticket.labels.length > 0" class="flex flex-wrap gap-2">
+                <span
+                  v-for="label in ticket.labels"
+                  :key="label"
+                  class="bg-lavender-100 text-purple-800 px-4 py-2 rounded-full text-sm font-medium"
+                >
+                  <i class="pi pi-tag mr-1"></i>{{ label }}
+                </span>
+              </div>
+              <p v-else class="text-purple-500 italic">No labels assigned to this ticket</p>
+            </div>
           </div>
 
           <!-- Comments Section -->
@@ -111,12 +185,13 @@
                   placeholder="Write your comment here..."
                   :disabled="isSubmitting"
                 />
-                <Button
+                <ZincButton
                   icon="pi pi-send"
                   @click="submitComment"
                   :disabled="!newComment.trim() || isSubmitting"
                   :loading="isSubmitting"
-                  class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded-lg self-start"
+                  severity="primary"
+                  small
                 />
               </div>
             </div>
@@ -130,11 +205,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import Button from 'primevue/button'
 import Message from 'primevue/message'
 import InputText from 'primevue/inputtext'
+import Textarea from 'primevue/textarea'
+import ZincButton from '@/components/ZincButton.vue'
 import { createAuthenticatedClient } from '@/api/apiClient'
-import { Ticket, TicketStatus, AddCommentToTicketRequest } from '@/api/apiclients/ZincApiClient'
+import { Ticket, TicketStatus, AddCommentToTicketRequest, EditTicketRequest } from '@/api/apiclients/ZincApiClient'
 
 const router = useRouter()
 const route = useRoute()
@@ -148,6 +224,11 @@ const commentAuthors = ref<Record<string, string>>({})
 const isLoading = ref(false)
 const isSubmitting = ref(false)
 const errorMessage = ref('')
+const isEditMode = ref(false)
+const editedTitle = ref('')
+const editedDescription = ref('')
+const editedLabels = ref<string[]>([])
+const editedStatus = ref<TicketStatus>(TicketStatus._2)
 
 async function loadTicket() {
   const identifier = route.params.identifier as string
@@ -311,6 +392,64 @@ async function submitComment() {
   } finally {
     isSubmitting.value = false
   }
+}
+
+function enterEditMode() {
+  if (!ticket.value) return
+  
+  isEditMode.value = true
+  editedTitle.value = ticket.value.title || ''
+  editedDescription.value = ticket.value.description || ''
+  editedLabels.value = [...(ticket.value.labels || [])]
+  editedStatus.value = ticket.value.status ?? TicketStatus._2
+}
+
+function cancelEdit() {
+  isEditMode.value = false
+  errorMessage.value = ''
+}
+
+async function saveEdit() {
+  if (!ticket.value || !projectKey.value) return
+
+  isSubmitting.value = true
+  errorMessage.value = ''
+
+  try {
+    const client = createAuthenticatedClient()
+    
+    const request = new EditTicketRequest({
+      projectKey: projectKey.value,
+      ticketIndex: ticket.value.index,
+      title: editedTitle.value,
+      description: editedDescription.value,
+      labels: editedLabels.value,
+      status: editedStatus.value
+    })
+    
+    await client.edit(request)
+    
+    // Exit edit mode
+    isEditMode.value = false
+    
+    // Reload the ticket to show the updated data
+    await loadTicket()
+  } catch (error: any) {
+    console.error('Failed to edit ticket:', error)
+    errorMessage.value = 'Failed to save changes. Please try again.'
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+function getAvailableStatuses(): TicketStatus[] {
+  return [
+    TicketStatus._1, // In Review
+    TicketStatus._2, // Open
+    TicketStatus._3, // In Progress
+    TicketStatus._4, // Complete
+    TicketStatus._5  // Cancelled
+  ]
 }
 
 onMounted(() => {

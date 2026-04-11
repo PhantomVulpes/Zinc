@@ -17,7 +17,7 @@
         <!-- Right: Auth Actions or User Info -->
         <div v-if="isAuthenticated" class="flex items-center gap-3">
           <!-- Admin Button (only shown for administrators) -->
-          <Button
+          <ZincButton
             v-if="isAdmin"
             label="Admin Stuff"
             icon="pi pi-shield"
@@ -25,8 +25,6 @@
             severity="info"
             outlined
             size="small"
-            aria-label="Admin Dashboard"
-            class="pr-4"
           />
 
           <div class="text-right">
@@ -37,24 +35,23 @@
             </div>
           </div>
           
-          <Button
+          <ZincButton
             icon="pi pi-sign-out"
             @click="handleSignOut"
             severity="secondary"
             outlined
             size="small"
-            aria-label="Sign Out"
           />
         </div>
         
         <div v-else class="flex gap-2">
-          <Button
+          <ZincButton
             icon="pi pi-sign-in"
             @click="router.push('/login')"
             severity="primary"
             size="small"
           />
-          <Button
+          <ZincButton
             icon="pi pi-user-plus"
             @click="router.push('/register')"
             severity="secondary"
@@ -71,7 +68,7 @@
 import { computed } from 'vue'
 import { useAuth } from '@/services/auth'
 import { useRouter } from 'vue-router'
-import Button from 'primevue/button'
+import ZincButton from '@/components/ZincButton.vue'
 import { Role } from '@/api/apiclients/ZincApiClient'
 
 const { user, isAuthenticated, signOut } = useAuth()

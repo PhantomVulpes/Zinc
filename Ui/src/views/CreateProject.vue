@@ -68,22 +68,20 @@
 
           <!-- Action Buttons -->
           <div class="flex gap-3 mt-2">
-            <Button
+            <ZincButton
               type="submit"
               label="Create Project"
               icon="pi pi-check"
               :loading="isLoading"
               severity="primary"
-              class="flex-1"
             />
-            <Button
+            <ZincButton
               type="button"
               label="Cancel"
               icon="pi pi-times"
               severity="secondary"
               :disabled="isLoading"
               @click="router.push('/')"
-              class="flex-1"
             />
           </div>
         </form>
@@ -96,10 +94,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Card from 'primevue/card'
-import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Message from 'primevue/message'
+import ZincButton from '@/components/ZincButton.vue'
 import { createAuthenticatedClient } from '@/api/apiClient'
 import { CreateNewProjectRequest } from '@/api/apiclients/ZincApiClient'
 

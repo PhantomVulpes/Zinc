@@ -17,12 +17,11 @@
           
           <!-- Success Actions -->
           <div v-if="successMessage" class="flex flex-col gap-2">
-            <Button
+            <ZincButton
               label="Go to Home"
               icon="pi pi-home"
               severity="success"
               @click="router.push('/')"
-              class="w-full"
             />
           </div>
 
@@ -91,13 +90,12 @@
           </div>
 
           <!-- Submit Button -->
-          <Button
+          <ZincButton
             type="submit"
             label="Register"
             icon="pi pi-user-plus"
             :loading="isLoading"
             severity="primary"
-            class="w-full mt-2"
           />
         </form>
       </template>
@@ -109,10 +107,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Card from 'primevue/card'
-import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Message from 'primevue/message'
+import ZincButton from '@/components/ZincButton.vue'
 import { RegisterUser } from '@/api/User/RegisterUserCommand'
 
 const router = useRouter()

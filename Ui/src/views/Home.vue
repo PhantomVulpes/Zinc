@@ -19,12 +19,11 @@
         <div v-if="isAuthenticated" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-lavender-200 p-8 mb-8">
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold text-purple-900">Projects</h2>
-            <Button
+            <ZincButton
               label="New Project"
               icon="pi pi-plus"
               severity="primary"
               @click="router.push('/projects/create')"
-              class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2"
             />
           </div>
           
@@ -97,8 +96,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import Button from 'primevue/button'
 import Message from 'primevue/message'
+import ZincButton from '@/components/ZincButton.vue'
 import { useAuth } from '@/services/auth'
 import { createAuthenticatedClient } from '@/api/apiClient'
 import { Project } from '@/api/apiclients/ZincApiClient'

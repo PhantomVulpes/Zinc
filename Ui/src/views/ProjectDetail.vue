@@ -3,7 +3,7 @@
     <div class="container mx-auto px-4 py-12">
       <div class="max-w-4xl mx-auto">
         <!-- Back Button -->
-        <Button
+        <ZincButton
           label="Back to Projects"
           icon="pi pi-arrow-left"
           severity="secondary"
@@ -29,12 +29,11 @@
             <h1 class="text-4xl font-bold text-purple-900 mb-2">
               {{ project.name }} <span class="text-2xl text-purple-600">({{ project.shorthand }})</span>
             </h1>
-            <Button
+            <ZincButton
               label="Create Ticket"
               icon="pi pi-plus"
               severity="primary"
               @click="router.push(`/projects/${project.shorthand}/create-ticket`)"
-              class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2"
             />
           </div>
 
@@ -107,8 +106,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import Button from 'primevue/button'
 import Message from 'primevue/message'
+import ZincButton from '@/components/ZincButton.vue'
 import { createAuthenticatedClient } from '@/api/apiClient'
 import { Project, ProjectStatus, TicketStatus } from '@/api/apiclients/ZincApiClient'
 
@@ -159,9 +158,9 @@ function formatTicketStatus(status: TicketStatus | undefined): string {
   
   const statusMap: Record<number, string> = {
     [TicketStatus._0]: 'Unknown',
-    [TicketStatus._1]: 'Open',
-    [TicketStatus._2]: 'In Progress',
-    [TicketStatus._3]: 'In Review',
+    [TicketStatus._1]: 'In Review',
+    [TicketStatus._2]: 'Open',
+    [TicketStatus._3]: 'In Progress',
     [TicketStatus._4]: 'Complete',
     [TicketStatus._5]: 'Cancelled'
   }
