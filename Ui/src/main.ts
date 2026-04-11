@@ -8,6 +8,7 @@ import Home from './views/Home.vue'
 import Register from './views/Register.vue'
 import Login from './views/Login.vue'
 import CreateProject from './views/CreateProject.vue'
+import ProjectDetail from './views/ProjectDetail.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -31,6 +32,11 @@ const router = createRouter({
       path: '/projects/create',
       name: 'CreateProject',
       component: CreateProject
+    },
+    {
+      path: '/projects/:projectKey',
+      name: 'ProjectDetail',
+      component: ProjectDetail
     }
   ]
 })

@@ -48,7 +48,12 @@
               <!-- Project Header -->
               <div class="flex items-start justify-between mb-3">
                 <h3 class="text-xl font-bold text-purple-900">
-                  {{ project.name }} <span class="text-sm text-purple-600">({{ project.shorthand }})</span>
+                  <router-link
+                    :to="`/projects/${project.key}`"
+                    class="hover:text-purple-600 transition-colors cursor-pointer"
+                  >
+                    {{ project.name }} <span class="text-sm text-purple-600">({{ project.shorthand }})</span>
+                  </router-link>
                 </h3>
                 <div class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">
                   {{ project.tickets?.length || 0 }} {{ project.tickets?.length === 1 ? 'ticket' : 'tickets' }}
