@@ -4,10 +4,13 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Vulpes.Zinc.Domain.Configuration;
-using Vulpes.Zinc.External.Mongo;
 using Vulpes.Zinc.Api.Configuration;
 using Vulpes.Zinc.Api.Middleware;
+using Vulpes.Zinc.Api.Services;
+using Vulpes.Zinc.Core.Configuration;
+using Vulpes.Zinc.Core.RegistrationExtensions;
+using Vulpes.Zinc.Infrastructure.Mongo;
+using Vulpes.Zinc.Infrastructure.RegistrationExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -110,14 +113,14 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Add middleware
-// builder.Services.AddTransient<UserContextMiddleware>();
+builder.Services.AddTransient<UserContextMiddleware>();
 
 MongoConfigurator.Configure();
 
 // Dependencies.
 _ = builder.Services
-    // .InjectInfrastructure()
-    // .InjectDomain()
+    .InjectInfrastructure()
+    .InjectCore()
     ;
 
 var app = builder.Build();
@@ -150,7 +153,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Add custom user context middleware
-// app.UseMiddleware<UserContextMiddleware>();
+app.UseMiddleware<UserContextMiddleware>();
 
 app.MapControllers();
 

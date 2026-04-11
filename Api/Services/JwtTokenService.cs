@@ -3,8 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Vulpes.Zinc.Api.Configuration;
 
-namespace Vulpes.Zinc.Api.Configuration;
+namespace Vulpes.Zinc.Api.Services;
 
 public class JwtTokenService : IJwtTokenService
 {

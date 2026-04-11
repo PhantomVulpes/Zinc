@@ -1,4 +1,4 @@
-namespace Vulpes.Zinc.Api.Configuration;
+namespace Vulpes.Zinc.Api.Services;
 
 public interface IJwtTokenService
 {

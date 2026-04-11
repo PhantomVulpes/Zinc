@@ -1,16 +1,16 @@
 using System.Security.Claims;
-using Vulpes.Zinc.Domain.Data;
-using Vulpes.Zinc.Domain.Models;
+using Vulpes.Electrum.Domain.Data;
+using Vulpes.Zinc.Core.Models;
 
 namespace Vulpes.Zinc.Api.Middleware;
 
 public class UserContextMiddleware : IMiddleware
 {
-    public static string ContextKey => $"{nameof(ZincUser)}.{nameof(ZincUser.Key)}".ToLower();
+    public static string ContextKey => $"{nameof(RegisteredUser)}.{nameof(RegisteredUser.Key)}".ToLower();
 
-    private readonly IDataRepository<ZincUser> userRepository;
+    private readonly IModelRepository<RegisteredUser> userRepository;
 
-    public UserContextMiddleware(IDataRepository<ZincUser> userRepository)
+    public UserContextMiddleware(IModelRepository<RegisteredUser> userRepository)
     {
         this.userRepository = userRepository;
     }
@@ -19,7 +19,7 @@ public class UserContextMiddleware : IMiddleware
     {
         if (context.User?.Identity?.IsAuthenticated != true)
         {
-            context.Items[ContextKey] = ZincUser.Empty;
+            context.Items[ContextKey] = RegisteredUser.Empty;
             await next(context);
         }
         else
