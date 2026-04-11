@@ -27,7 +27,55 @@
               class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2"
             />
           </div>
-          <p class="text-purple-700">
+          
+          <!-- Loading State -->
+          <div v-if="isLoadingProjects" class="flex justify-center py-8">
+            <i class="pi pi-spinner pi-spin text-4xl text-purple-600"></i>
+          </div>
+
+          <!-- Error Message -->
+          <Message v-if="errorMessage" severity="error" :closable="true" @close="errorMessage = ''">
+            {{ errorMessage }}
+          </Message>
+
+          <!-- Projects List -->
+          <div v-if="!isLoadingProjects && projects.length > 0" class="space-y-4">
+            <div
+              v-for="project in projects"
+              :key="project.key"
+              class="bg-white rounded-lg border border-lavender-300 p-6 shadow-sm hover:shadow-md transition-shadow"
+            >
+              <!-- Project Header -->
+              <div class="flex items-start justify-between mb-3">
+                <h3 class="text-xl font-bold text-purple-900">
+                  {{ project.name }} <span class="text-sm text-purple-600">({{ project.shorthand }})</span>
+                </h3>
+                <div class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">
+                  {{ project.tickets?.length || 0 }} {{ project.tickets?.length === 1 ? 'ticket' : 'tickets' }}
+                </div>
+              </div>
+
+              <!-- Description -->
+              <p class="text-purple-700 mb-4">{{ project.description }}</p>
+
+              <!-- Labels -->
+              <div v-if="project.labels && project.labels.length > 0" class="flex flex-wrap gap-2">
+                <span
+                  v-for="label in project.labels"
+                  :key="label"
+                  class="bg-lavender-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium"
+                >
+                  <i class="pi pi-tag mr-1"></i>{{ label }}
+                </span>
+              </div>
+              <div v-else class="text-purple-500 text-sm italic">
+                No labels
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <p v-if="!isLoadingProjects && projects.length === 0 && !errorMessage" class="text-purple-700">
             Your projects will appear here. Create your first project to get started!
           </p>
         </div>
@@ -42,10 +90,43 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
+import Message from 'primevue/message'
 import { useAuth } from '@/services/auth'
+import { createAuthenticatedClient } from '@/api/apiClient'
+import { Project } from '@/api/apiclients/ZincApiClient'
 
 const router = useRouter()
 const { isAuthenticated } = useAuth()
+
+const projects = ref<Project[]>([])
+const isLoadingProjects = ref(false)
+const errorMessage = ref('')
+
+async function loadProjects() {
+  if (!isAuthenticated.value) {
+    return
+  }
+
+  isLoadingProjects.value = true
+  errorMessage.value = ''
+
+  try {
+    const client = createAuthenticatedClient()
+    const result = await client.projectsAll()
+    projects.value = result || []
+  } catch (error: any) {
+    console.error('Failed to load projects:', error)
+    errorMessage.value = 'Failed to load projects. Please try again.'
+  } finally {
+    isLoadingProjects.value = false
+  }
+}
+
+// Load projects when component mounts
+onMounted(() => {
+  loadProjects()
+})
 </script>

@@ -32,4 +32,12 @@ public class ProjectController : ZincController
         var projects = await mediator.RequestResponseAsync(new GetAllAccessibleProjectsQuery(RegisteredUser.Key));
         return Ok(projects);
     }
+
+    [HttpGet("projects/{projectKey}")]
+    [ProducesResponseType(typeof(Project), StatusCodes.Status200OK)]
+    public async Task<ActionResult<Project>> GetProjectByKeyAsync(Guid projectKey)
+    {
+        var projects = await mediator.RequestResponseAsync(new GetProjectByKeyQuery(projectKey, RegisteredUser.Key));
+        return Ok(projects);
+    }
 }
