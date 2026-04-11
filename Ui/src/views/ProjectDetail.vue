@@ -78,10 +78,14 @@
               <div
                 v-for="(ticket, index) in project.tickets"
                 :key="ticket.index ?? index"
-                class="bg-white rounded-lg border border-lavender-300 p-4 shadow-sm hover:shadow-md transition-shadow"
+                class="bg-white rounded-lg border border-lavender-300 p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                @click="router.push(`/ticket/${project.shorthand}-${ticket.index}`)"
               >
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-purple-600 font-semibold text-sm">{{ project.shorthand }}-{{ ticket.index }}</span>
+                    </div>
                     <h3 class="font-semibold text-purple-900">{{ ticket.title }}</h3>
                     <p v-if="ticket.description" class="text-sm text-purple-700 mt-1">{{ ticket.description }}</p>
                   </div>

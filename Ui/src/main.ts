@@ -10,6 +10,7 @@ import Login from './views/Login.vue'
 import CreateProject from './views/CreateProject.vue'
 import ProjectDetail from './views/ProjectDetail.vue'
 import CreateTicket from './views/CreateTicket.vue'
+import TicketDetail from './views/TicketDetail.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -43,6 +44,11 @@ const router = createRouter({
       path: '/projects/:projectShorthand/create-ticket',
       name: 'CreateTicket',
       component: CreateTicket
+    },
+    {
+      path: '/ticket/:identifier',
+      name: 'TicketDetail',
+      component: TicketDetail
     }
   ]
 })
