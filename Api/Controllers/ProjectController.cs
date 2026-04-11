@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Vulpes.Electrum.Domain.Mediation;
 using Vulpes.Zinc.Api.Requests;
+using Vulpes.Zinc.Core.Models;
+using Vulpes.Zinc.Core.Queries;
 
 namespace Vulpes.Zinc.Api.Controllers;
 
@@ -21,5 +23,13 @@ public class ProjectController : ZincController
         await mediator.ExecuteCommandAsync(request.ToCommand(projectKey, RegisteredUser.Key));
 
         return Ok(projectKey.ToString());
+    }
+
+    [HttpGet("projects")]
+    [ProducesResponseType(typeof(IEnumerable<Project>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<Project>>> GetAllAccessibleProjectsAsync()
+    {
+        var projects = await mediator.RequestResponseAsync(new GetAllAccessibleProjectsQuery(RegisteredUser.Key));
+        return Ok(projects);
     }
 }

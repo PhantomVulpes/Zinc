@@ -61,6 +61,50 @@ export class Client {
     }
 
     /**
+     * @return OK
+     */
+    projects(): Promise<Project[]> {
+        let url_ = this.baseUrl + "/api/project/projects";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processProjects(_response);
+        });
+    }
+
+    protected processProjects(response: Response): Promise<Project[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Project.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Project[]>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return OK
      */
@@ -144,6 +188,50 @@ export class Client {
         }
         return Promise.resolve<LoginResponse>(null as any);
     }
+}
+
+export class Comment implements IComment {
+    value?: string | null;
+    author?: string;
+    createdDate?: Date;
+
+    constructor(data?: IComment) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"] !== undefined ? _data["value"] : null as any;
+            this.author = _data["author"] !== undefined ? _data["author"] : null as any;
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : null as any;
+        }
+    }
+
+    static fromJS(data: any): Comment {
+        data = typeof data === 'object' ? data : {};
+        let result = new Comment();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value !== undefined ? this.value : null as any;
+        data["author"] = this.author !== undefined ? this.author : null as any;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : null as any;
+        return data;
+    }
+}
+
+export interface IComment {
+    value?: string | null;
+    author?: string;
+    createdDate?: Date;
 }
 
 export class CreateNewProjectRequest implements ICreateNewProjectRequest {
@@ -286,6 +374,122 @@ export interface ILoginResponse {
     role?: Role;
 }
 
+export class Project implements IProject {
+    key?: string;
+    editingToken?: string | null;
+    name?: string | null;
+    shorthand?: string | null;
+    description?: string | null;
+    defaultTicketStatus?: TicketStatus;
+    allowedUserKeys?: string[] | null;
+    creatorKey?: string;
+    status?: ProjectStatus;
+    tickets?: Ticket[] | null;
+    labels?: string[] | null;
+
+    constructor(data?: IProject) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.key = _data["key"] !== undefined ? _data["key"] : null as any;
+            this.editingToken = _data["editingToken"] !== undefined ? _data["editingToken"] : null as any;
+            this.name = _data["name"] !== undefined ? _data["name"] : null as any;
+            this.shorthand = _data["shorthand"] !== undefined ? _data["shorthand"] : null as any;
+            this.description = _data["description"] !== undefined ? _data["description"] : null as any;
+            this.defaultTicketStatus = _data["defaultTicketStatus"] !== undefined ? _data["defaultTicketStatus"] : null as any;
+            if (Array.isArray(_data["allowedUserKeys"])) {
+                this.allowedUserKeys = [] as any;
+                for (let item of _data["allowedUserKeys"])
+                    this.allowedUserKeys!.push(item);
+            }
+            else {
+                this.allowedUserKeys = null as any;
+            }
+            this.creatorKey = _data["creatorKey"] !== undefined ? _data["creatorKey"] : null as any;
+            this.status = _data["status"] !== undefined ? _data["status"] : null as any;
+            if (Array.isArray(_data["tickets"])) {
+                this.tickets = [] as any;
+                for (let item of _data["tickets"])
+                    this.tickets!.push(Ticket.fromJS(item));
+            }
+            else {
+                this.tickets = null as any;
+            }
+            if (Array.isArray(_data["labels"])) {
+                this.labels = [] as any;
+                for (let item of _data["labels"])
+                    this.labels!.push(item);
+            }
+            else {
+                this.labels = null as any;
+            }
+        }
+    }
+
+    static fromJS(data: any): Project {
+        data = typeof data === 'object' ? data : {};
+        let result = new Project();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["key"] = this.key !== undefined ? this.key : null as any;
+        data["editingToken"] = this.editingToken !== undefined ? this.editingToken : null as any;
+        data["name"] = this.name !== undefined ? this.name : null as any;
+        data["shorthand"] = this.shorthand !== undefined ? this.shorthand : null as any;
+        data["description"] = this.description !== undefined ? this.description : null as any;
+        data["defaultTicketStatus"] = this.defaultTicketStatus !== undefined ? this.defaultTicketStatus : null as any;
+        if (Array.isArray(this.allowedUserKeys)) {
+            data["allowedUserKeys"] = [];
+            for (let item of this.allowedUserKeys)
+                data["allowedUserKeys"].push(item);
+        }
+        data["creatorKey"] = this.creatorKey !== undefined ? this.creatorKey : null as any;
+        data["status"] = this.status !== undefined ? this.status : null as any;
+        if (Array.isArray(this.tickets)) {
+            data["tickets"] = [];
+            for (let item of this.tickets)
+                data["tickets"].push(item ? item.toJSON() : null as any);
+        }
+        if (Array.isArray(this.labels)) {
+            data["labels"] = [];
+            for (let item of this.labels)
+                data["labels"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IProject {
+    key?: string;
+    editingToken?: string | null;
+    name?: string | null;
+    shorthand?: string | null;
+    description?: string | null;
+    defaultTicketStatus?: TicketStatus;
+    allowedUserKeys?: string[] | null;
+    creatorKey?: string;
+    status?: ProjectStatus;
+    tickets?: Ticket[] | null;
+    labels?: string[] | null;
+}
+
+export enum ProjectStatus {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+}
+
 export class RegisterNewUserRequest implements IRegisterNewUserRequest {
     firstName?: string | null;
     lastName?: string | null;
@@ -339,6 +543,113 @@ export enum Role {
     _1 = 1,
     _2 = 2,
     _3 = 3,
+}
+
+export class Ticket implements ITicket {
+    key?: string;
+    editingToken?: string | null;
+    title?: string | null;
+    description?: string | null;
+    assignedToKey?: string;
+    reporterKey?: string;
+    comments?: Comment[] | null;
+    createdDate?: Date;
+    completedDate?: Date;
+    labels?: string[] | null;
+    status?: TicketStatus;
+
+    constructor(data?: ITicket) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.key = _data["key"] !== undefined ? _data["key"] : null as any;
+            this.editingToken = _data["editingToken"] !== undefined ? _data["editingToken"] : null as any;
+            this.title = _data["title"] !== undefined ? _data["title"] : null as any;
+            this.description = _data["description"] !== undefined ? _data["description"] : null as any;
+            this.assignedToKey = _data["assignedToKey"] !== undefined ? _data["assignedToKey"] : null as any;
+            this.reporterKey = _data["reporterKey"] !== undefined ? _data["reporterKey"] : null as any;
+            if (Array.isArray(_data["comments"])) {
+                this.comments = [] as any;
+                for (let item of _data["comments"])
+                    this.comments!.push(Comment.fromJS(item));
+            }
+            else {
+                this.comments = null as any;
+            }
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : null as any;
+            this.completedDate = _data["completedDate"] ? new Date(_data["completedDate"].toString()) : null as any;
+            if (Array.isArray(_data["labels"])) {
+                this.labels = [] as any;
+                for (let item of _data["labels"])
+                    this.labels!.push(item);
+            }
+            else {
+                this.labels = null as any;
+            }
+            this.status = _data["status"] !== undefined ? _data["status"] : null as any;
+        }
+    }
+
+    static fromJS(data: any): Ticket {
+        data = typeof data === 'object' ? data : {};
+        let result = new Ticket();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["key"] = this.key !== undefined ? this.key : null as any;
+        data["editingToken"] = this.editingToken !== undefined ? this.editingToken : null as any;
+        data["title"] = this.title !== undefined ? this.title : null as any;
+        data["description"] = this.description !== undefined ? this.description : null as any;
+        data["assignedToKey"] = this.assignedToKey !== undefined ? this.assignedToKey : null as any;
+        data["reporterKey"] = this.reporterKey !== undefined ? this.reporterKey : null as any;
+        if (Array.isArray(this.comments)) {
+            data["comments"] = [];
+            for (let item of this.comments)
+                data["comments"].push(item ? item.toJSON() : null as any);
+        }
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : null as any;
+        data["completedDate"] = this.completedDate ? this.completedDate.toISOString() : null as any;
+        if (Array.isArray(this.labels)) {
+            data["labels"] = [];
+            for (let item of this.labels)
+                data["labels"].push(item);
+        }
+        data["status"] = this.status !== undefined ? this.status : null as any;
+        return data;
+    }
+}
+
+export interface ITicket {
+    key?: string;
+    editingToken?: string | null;
+    title?: string | null;
+    description?: string | null;
+    assignedToKey?: string;
+    reporterKey?: string;
+    comments?: Comment[] | null;
+    createdDate?: Date;
+    completedDate?: Date;
+    labels?: string[] | null;
+    status?: TicketStatus;
+}
+
+export enum TicketStatus {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+    _4 = 4,
+    _5 = 5,
 }
 
 export class ApiException extends Error {

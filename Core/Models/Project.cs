@@ -61,6 +61,9 @@ public record Project : AggregateRoot
 
         return new(validatedObject);
     }
+
+    public override string ToLogName() => $"{Name} ({Key})";
+
 }
 
 public enum ProjectStatus

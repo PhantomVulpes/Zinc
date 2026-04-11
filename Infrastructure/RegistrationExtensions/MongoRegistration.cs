@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Vulpes.Electrum.Domain.Data;
 using Vulpes.Electrum.Domain.Mongo;
-using Vulpes.Zinc.Core.Models;
 using Vulpes.Zinc.Infrastructure.Mongo;
 
 namespace Vulpes.Zinc.Infrastructure.RegistrationExtensions;
@@ -19,6 +18,6 @@ public static class MongoRegistration
         ;
 
     private static IServiceCollection InjectQueryProviders(this IServiceCollection services) => services
-        .AddTransient<IQueryProvider<RegisteredUser>, MongoQueryProvider<RegisteredUser>>()
+        .AddTransient(typeof(IQueryProvider<>), typeof(MongoQueryProvider<>))
         ;
 }

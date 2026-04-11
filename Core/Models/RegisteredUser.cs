@@ -58,4 +58,7 @@ public record RegisteredUser : AggregateRoot
 
         return new(validatedObject);
     }
+
+    public override string ToLogName() => $"{FirstName} {LastName} ({Username}) ({Key})";
+
 }
