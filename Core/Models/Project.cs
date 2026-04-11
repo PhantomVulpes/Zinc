@@ -24,6 +24,7 @@ public record Project : AggregateRoot
     public IEnumerable<Guid> AllowedUserKeys { get; init; } = [];
     public Guid CreatorKey { get; init; } = Guid.Empty;
     public ProjectStatus Status { get; init; } = ProjectStatus.Unknown;
+    public IEnumerable<Ticket> Tickets { get; init; } = [];
 
     public IEnumerable<string> Labels { get; init; } = [];
 
@@ -39,6 +40,26 @@ public record Project : AggregateRoot
             ;
 
         return new AggregateRootValidationModel<Project>(this, validationBuilder);
+    }
+
+    public SaveModel<Project> PrepareForSave()
+    {
+        var validatedObject = (this with
+        {
+            EditingToken = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
+        }).Validate();
+
+        return new(validatedObject, EditingToken);
+    }
+
+    public InsertModel<Project> PrepareForInsert()
+    {
+        var validatedObject = (this with
+        {
+            EditingToken = DateTime.UtcNow.ToLongDateString()
+        }).Validate();
+
+        return new(validatedObject);
     }
 }
 

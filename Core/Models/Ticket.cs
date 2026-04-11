@@ -1,4 +1,3 @@
-using System;
 using Vulpes.Electrum.Domain.Models;
 using Vulpes.Electrum.Domain.Validation;
 using Vulpes.Zinc.Core.Logging;
@@ -22,7 +21,6 @@ public record Ticket : AggregateRoot
     public IEnumerable<Comment> Comments { get; init; } = [];
     public DateTime CreatedDate { get; init; } = DateTime.MinValue;
     public DateTime CompletedDate { get; init; } = DateTime.MinValue;
-    public Guid ProjectKey { get; init; } = Guid.Empty;
     public IEnumerable<string> Labels { get; init; } = [];
 
     public TicketStatus Status { get; init; } = TicketStatus.Unknown;
@@ -42,7 +40,6 @@ public record Ticket : AggregateRoot
             .InvalidIf(() => Key == Guid.Empty, () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(Key)} cannot be empty."))
             .InvalidIf(() => string.IsNullOrEmpty(Title), () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(Title)} is required."))
             .InvalidIf(() => ReporterKey == Guid.Empty, () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(ReporterKey)} is required."))
-            .InvalidIf(() => ProjectKey == Guid.Empty, () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(ProjectKey)} is required."))
             .InvalidIf(() => Status == TicketStatus.Unknown, () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(Status)} is required."))
             ;
 
