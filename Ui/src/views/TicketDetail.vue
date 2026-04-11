@@ -85,40 +85,38 @@
             <h2 class="text-xl font-semibold text-purple-900 mb-4">Comments</h2>
             
             <!-- Existing Comments -->
-            <div v-if="ticket.comments && ticket.comments.length > 0" class="space-y-4 mb-6">
+            <div v-if="ticket.comments && ticket.comments.length > 0" class="space-y-4 mb-4">
               <div
                 v-for="(comment, index) in ticket.comments"
                 :key="index"
                 class="bg-white rounded-lg border border-lavender-300 p-4 shadow-sm"
               >
                 <div class="flex items-start justify-between mb-2">
-                  <div class="font-semibold text-purple-900">{{ comment.author || 'Unknown' }}</div>
+                  <div class="font-semibold text-purple-900">{{ getCommentAuthorName(comment.author) || 'Loading...' }}</div>
                   <div class="text-sm text-purple-600">{{ formatDate(comment.createdDate) }}</div>
                 </div>
                 <p class="text-purple-700 whitespace-pre-wrap">{{ comment.value }}</p>
               </div>
             </div>
             
-            <p v-else class="text-purple-500 italic mb-6">No comments yet</p>
+            <p v-else class="text-purple-500 italic mb-4">No comments yet</p>
             
             <!-- Add Comment Form -->
-            <div class="bg-purple-50 rounded-lg border border-purple-200 p-4">
-              <h3 class="text-lg font-semibold text-purple-900 mb-3">Add a Comment</h3>
-              <Textarea
-                v-model="newComment"
-                rows="4"
-                class="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                placeholder="Write your comment here..."
-                :disabled="isSubmitting"
-              />
-              <div class="flex justify-end mt-3">
+            <div class="bg-white rounded-lg border border-lavender-300 p-4 shadow-sm">
+              <div class="flex gap-3">
+                <InputText
+                  v-model="newComment"
+                  rows="3"
+                  class="flex-1 p-3 border border-lavender-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="Write your comment here..."
+                  :disabled="isSubmitting"
+                />
                 <Button
-                  label="Post Comment"
                   icon="pi pi-send"
                   @click="submitComment"
                   :disabled="!newComment.trim() || isSubmitting"
                   :loading="isSubmitting"
-                  class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-2 rounded-lg"
+                  class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded-lg self-start"
                 />
               </div>
             </div>
@@ -134,7 +132,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
-import Textarea from 'primevue/textarea'
+import InputText from 'primevue/inputtext'
 import { createAuthenticatedClient } from '@/api/apiClient'
 import { Ticket, TicketStatus, AddCommentToTicketRequest } from '@/api/apiclients/ZincApiClient'
 
@@ -146,6 +144,7 @@ const projectShorthand = ref('')
 const reporterUsername = ref('')
 const projectKey = ref('')
 const newComment = ref('')
+const commentAuthors = ref<Record<string, string>>({})
 const isLoading = ref(false)
 const isSubmitting = ref(false)
 const errorMessage = ref('')
@@ -203,6 +202,9 @@ async function loadTicket() {
           reporterUsername.value = 'Unknown'
         }
       }
+      
+      // Load comment author usernames
+      await loadCommentAuthors(foundTicket, client)
     }
   } catch (error: any) {
     console.error('Failed to load ticket:', error)
@@ -252,6 +254,33 @@ function formatDate(date: Date | undefined): string {
     hour: '2-digit',
     minute: '2-digit'
   })
+}
+
+async function loadCommentAuthors(ticketData: Ticket, client: any) {
+  if (!ticketData.comments || ticketData.comments.length === 0) return
+  
+  const authorKeys = new Set<string>()
+  ticketData.comments.forEach(comment => {
+    if (comment.author) {
+      authorKeys.add(comment.author)
+    }
+  })
+  
+  // Load all unique author usernames
+  for (const authorKey of authorKeys) {
+    try {
+      const user = await client.user(authorKey)
+      commentAuthors.value[authorKey] = user.username || 'Unknown'
+    } catch (error) {
+      console.error(`Failed to load user ${authorKey}:`, error)
+      commentAuthors.value[authorKey] = 'Unknown'
+    }
+  }
+}
+
+function getCommentAuthorName(authorKey: string | undefined): string {
+  if (!authorKey) return 'Unknown'
+  return commentAuthors.value[authorKey] || 'Loading...'
 }
 
 async function submitComment() {

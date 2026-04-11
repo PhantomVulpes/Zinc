@@ -31,7 +31,9 @@ public class AddCommentToTicketCommandHandler : CommandHandler<AddCommentToTicke
         };
 
         var updatedTicket = ticket.WithAddedComment(comment);
-        var updatedProject = project.WithUpdatedTicket(ticket.Validate());
+        var updatedProject = project.WithUpdatedTicket(updatedTicket.Validate());
+
+        await projectRepository.SaveAsync(updatedProject.PrepareForSave());
     }
 
     protected override async Task<AccessResult> InternalValidateAccessAsync(AddCommentToTicketCommand command)
