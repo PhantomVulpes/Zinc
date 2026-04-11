@@ -1,0 +1,40 @@
+using Vulpes.Electrum.Domain.Commanding;
+using Vulpes.Electrum.Domain.Data;
+using Vulpes.Electrum.Domain.Extensions;
+using Vulpes.Electrum.Domain.Security;
+using Vulpes.Zinc.Core.Models;
+using Vulpes.Zinc.Core.Security;
+
+namespace Vulpes.Zinc.Core.Commands;
+
+public record RegisterNewUserCommand(Guid Key, string FirstName, string LastName, string Username, string PasswordRaw) : Command;
+public class RegisterNewUserCommandHandler : CommandHandler<RegisterNewUserCommand>
+{
+    private readonly IModelRepository<RegisteredUser> registeredUserModelRepository;
+    private readonly IKnoxHasher knoxHasher;
+
+    public RegisterNewUserCommandHandler(IModelRepository<RegisteredUser> registeredUserModelRepository, IKnoxHasher knoxHasher)
+    {
+        this.registeredUserModelRepository = registeredUserModelRepository;
+        this.knoxHasher = knoxHasher;
+    }
+
+    protected override async Task InternalExecuteAsync(RegisterNewUserCommand command)
+    {
+        var hashedPassword = knoxHasher.HashPassword(command.PasswordRaw);
+        var newUser = RegisteredUser.Default with
+        {
+            Key = command.Key,
+            FirstName = command.FirstName,
+            LastName = command.LastName,
+            Username = command.Username,
+            PasswordHash = new(hashedPassword),
+            Role = Role.Basic,
+        };
+
+        await registeredUserModelRepository.InsertAsync(newUser.PrepareForInsert());
+    }
+
+    // Any user can register.
+    protected override Task<AccessResult> InternalValidateAccessAsync(RegisterNewUserCommand command) => AccessResult.Success().FromResult();
+}

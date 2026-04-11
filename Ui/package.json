@@ -1,0 +1,32 @@
+{
+  "name": "zinc-ui",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Zinc Vue TypeScript Frontend",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "build-zinc-api-client": "nswag run ./src/api/apiclients/ZincApi.nswag"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "primeicons": "^7.0.0",
+    "primevue": "^4.5.5",
+    "tailwindcss-primeui": "^0.6.1",
+    "vue": "^3.5.32",
+    "vue-router": "^5.0.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "autoprefixer": "^10.4.27",
+    "nswag": "^14.7.0",
+    "postcss": "^8.5.9",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^6.0.2",
+    "vite": "^5.4.21",
+    "vue-tsc": "^3.2.6"
+  }
+}
