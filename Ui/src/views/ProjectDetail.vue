@@ -69,8 +69,8 @@
             <h2 class="text-xl font-semibold text-purple-900 mb-4">Tickets</h2>
             <div class="space-y-3">
               <div
-                v-for="ticket in project.tickets"
-                :key="ticket.key"
+                v-for="(ticket, index) in project.tickets"
+                :key="ticket.index ?? index"
                 class="bg-white rounded-lg border border-lavender-300 p-4 shadow-sm hover:shadow-md transition-shadow"
               >
                 <div class="flex items-start justify-between">
@@ -109,10 +109,10 @@ const isLoading = ref(false)
 const errorMessage = ref('')
 
 async function loadProject() {
-  const projectKey = route.params.projectKey as string
+  const projectShorthand = route.params.projectShorthand as string
   
-  if (!projectKey) {
-    errorMessage.value = 'No project key provided'
+  if (!projectShorthand) {
+    errorMessage.value = 'No project shorthand provided'
     return
   }
 
@@ -121,7 +121,7 @@ async function loadProject() {
 
   try {
     const client = createAuthenticatedClient()
-    project.value = await client.projects(projectKey)
+    project.value = await client.projects(projectShorthand)
   } catch (error: any) {
     console.error('Failed to load project:', error)
     errorMessage.value = 'Failed to load project details. Please try again.'

@@ -107,11 +107,11 @@ export class Client {
     /**
      * @return OK
      */
-    projects(projectKey: string): Promise<Project> {
-        let url_ = this.baseUrl + "/api/project/projects/{projectKey}";
-        if (projectKey === undefined || projectKey === null)
-            throw new globalThis.Error("The parameter 'projectKey' must be defined.");
-        url_ = url_.replace("{projectKey}", encodeURIComponent("" + projectKey));
+    projects(projectShorthand: string): Promise<Project> {
+        let url_ = this.baseUrl + "/api/project/projects/{projectShorthand}";
+        if (projectShorthand === undefined || projectShorthand === null)
+            throw new globalThis.Error("The parameter 'projectShorthand' must be defined.");
+        url_ = url_.replace("{projectShorthand}", encodeURIComponent("" + projectShorthand));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -586,8 +586,7 @@ export enum Role {
 }
 
 export class Ticket implements ITicket {
-    key?: string;
-    editingToken?: string | null;
+    index?: number;
     title?: string | null;
     description?: string | null;
     assignedToKey?: string;
@@ -609,8 +608,7 @@ export class Ticket implements ITicket {
 
     init(_data?: any) {
         if (_data) {
-            this.key = _data["key"] !== undefined ? _data["key"] : null as any;
-            this.editingToken = _data["editingToken"] !== undefined ? _data["editingToken"] : null as any;
+            this.index = _data["index"] !== undefined ? _data["index"] : null as any;
             this.title = _data["title"] !== undefined ? _data["title"] : null as any;
             this.description = _data["description"] !== undefined ? _data["description"] : null as any;
             this.assignedToKey = _data["assignedToKey"] !== undefined ? _data["assignedToKey"] : null as any;
@@ -646,8 +644,7 @@ export class Ticket implements ITicket {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["key"] = this.key !== undefined ? this.key : null as any;
-        data["editingToken"] = this.editingToken !== undefined ? this.editingToken : null as any;
+        data["index"] = this.index !== undefined ? this.index : null as any;
         data["title"] = this.title !== undefined ? this.title : null as any;
         data["description"] = this.description !== undefined ? this.description : null as any;
         data["assignedToKey"] = this.assignedToKey !== undefined ? this.assignedToKey : null as any;
@@ -670,8 +667,7 @@ export class Ticket implements ITicket {
 }
 
 export interface ITicket {
-    key?: string;
-    editingToken?: string | null;
+    index?: number;
     title?: string | null;
     description?: string | null;
     assignedToKey?: string;

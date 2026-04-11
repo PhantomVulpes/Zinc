@@ -34,7 +34,7 @@ const router = createRouter({
       component: CreateProject
     },
     {
-      path: '/projects/:projectKey',
+      path: '/projects/:projectShorthand',
       name: 'ProjectDetail',
       component: ProjectDetail
     }

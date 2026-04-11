@@ -33,11 +33,11 @@ public class ProjectController : ZincController
         return Ok(projects);
     }
 
-    [HttpGet("projects/{projectKey}")]
+    [HttpGet("projects/{projectShorthand}")]
     [ProducesResponseType(typeof(Project), StatusCodes.Status200OK)]
-    public async Task<ActionResult<Project>> GetProjectByKeyAsync(Guid projectKey)
+    public async Task<ActionResult<Project>> GetProjectByShorthandAsync(string projectShorthand)
     {
-        var projects = await mediator.RequestResponseAsync(new GetProjectByKeyQuery(projectKey, RegisteredUser.Key));
+        var projects = await mediator.RequestResponseAsync(new GetProjectByShorthandQuery(projectShorthand, RegisteredUser.Key));
         return Ok(projects);
     }
 }

@@ -26,6 +26,7 @@ public static class MediationRegistration
         .AddTransient<QueryHandler<GetUserByLoginCredentialsQuery, RegisteredUser>, GetUserByLoginCredentialsQueryHandler>()
         .AddTransient<QueryHandler<GetProjectByKeyQuery, Project>, GetProjectByKeyQueryHandler>()
         .AddTransient<QueryHandler<GetAllAccessibleProjectsQuery, IQueryable<Project>>, GetAllAccessibleProjectsQueryHandler>()
+        .AddTransient<QueryHandler<GetProjectByShorthandQuery, Project>, GetProjectByShorthandQueryHandler>()
         ;
 
     private static IServiceCollection InjectMediatorInternal(this IServiceCollection services)
@@ -44,6 +45,7 @@ public static class MediationRegistration
                 .Register(provider.GetRequiredService<QueryHandler<GetUserByLoginCredentialsQuery, RegisteredUser>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetProjectByKeyQuery, Project>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetAllAccessibleProjectsQuery, IQueryable<Project>>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetProjectByShorthandQuery, Project>>())
                 ;
 
             return mediator;

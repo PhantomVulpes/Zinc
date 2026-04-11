@@ -49,7 +49,7 @@
               <div class="flex items-start justify-between mb-3">
                 <h3 class="text-xl font-bold text-purple-900">
                   <router-link
-                    :to="`/projects/${project.key}`"
+                    :to="`/projects/${project.shorthand}`"
                     class="hover:text-purple-600 transition-colors cursor-pointer"
                   >
                     {{ project.name }} <span class="text-sm text-purple-600">({{ project.shorthand }})</span>

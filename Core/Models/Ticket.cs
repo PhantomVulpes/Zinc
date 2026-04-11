@@ -1,19 +1,20 @@
-using Vulpes.Electrum.Domain.Models;
 using Vulpes.Electrum.Domain.Validation;
 using Vulpes.Zinc.Core.Logging;
+using Vulpes.Zinc.Core.Validation;
 
 namespace Vulpes.Zinc.Core.Models;
 
-public record Ticket : AggregateRoot
+public record Ticket
 {
     public static Ticket Empty => new();
-    public static Ticket Default =>
+    public static Ticket Default(int index) =>
         Empty with
         {
-            Key = Guid.NewGuid(),
+            Index = index,
             CreatedDate = DateTime.UtcNow,
         };
 
+    public int Index { get; init; } = int.MinValue;
     public string Title { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public Guid AssignedToKey { get; init; } = Guid.Empty;
@@ -34,16 +35,16 @@ public record Ticket : AggregateRoot
         };
     }
 
-    public AggregateRootValidationModel<Ticket> Validate()
+    public IValidationModel<Ticket> Validate()
     {
         var validationBuilder = new ValidationBuilder()
-            .InvalidIf(() => Key == Guid.Empty, () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(Key)} cannot be empty."))
+            .InvalidIf(() => Index <= 0, () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(Index)} cannot be below 1."))
             .InvalidIf(() => string.IsNullOrEmpty(Title), () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(Title)} is required."))
             .InvalidIf(() => ReporterKey == Guid.Empty, () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(ReporterKey)} is required."))
             .InvalidIf(() => Status == TicketStatus.Unknown, () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(Status)} is required."))
             ;
 
-        return new AggregateRootValidationModel<Ticket>(this, validationBuilder);
+        return new GenericValidationModel<Ticket>(this, validationBuilder);
     }
 }
 
