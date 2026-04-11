@@ -51,4 +51,13 @@ public class ProjectController : ZincController
 
         return Ok();
     }
+
+    [HttpPost("ticket/add-comment")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> AddCommentToTicketAsync(AddCommentToTicketRequest request)
+    {
+        await mediator.ExecuteCommandAsync(request.ToCommand(RegisteredUser.Key));
+
+        return Ok();
+    }
 }

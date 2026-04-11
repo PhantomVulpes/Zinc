@@ -49,13 +49,7 @@
             <!-- Reporter -->
             <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
               <div class="text-sm text-purple-600 font-medium mb-1">Reporter</div>
-              <div class="text-lg font-semibold text-purple-900">{{ ticket.reporterKey || 'Unknown' }}</div>
-            </div>
-
-            <!-- Assigned To -->
-            <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
-              <div class="text-sm text-purple-600 font-medium mb-1">Assigned To</div>
-              <div class="text-lg font-semibold text-purple-900">{{ ticket.assignedToKey || 'Unassigned' }}</div>
+              <div class="text-lg font-semibold text-purple-900">{{ reporterUsername || 'Loading...' }}</div>
             </div>
 
             <!-- Created Date -->
@@ -65,7 +59,7 @@
             </div>
 
             <!-- Completed Date -->
-            <div v-if="ticket.completedDate" class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+            <div v-if="ticket.status === TicketStatus._4 && ticket.completedDate" class="bg-purple-50 rounded-lg p-4 border border-purple-200">
               <div class="text-sm text-purple-600 font-medium mb-1">Completed</div>
               <div class="text-lg font-semibold text-purple-900">{{ formatDate(ticket.completedDate) }}</div>
             </div>
@@ -87,9 +81,11 @@
           </div>
 
           <!-- Comments Section -->
-          <div v-if="ticket.comments && ticket.comments.length > 0" class="mt-8">
+          <div class="mt-8">
             <h2 class="text-xl font-semibold text-purple-900 mb-4">Comments</h2>
-            <div class="space-y-4">
+            
+            <!-- Existing Comments -->
+            <div v-if="ticket.comments && ticket.comments.length > 0" class="space-y-4 mb-6">
               <div
                 v-for="(comment, index) in ticket.comments"
                 :key="index"
@@ -100,6 +96,30 @@
                   <div class="text-sm text-purple-600">{{ formatDate(comment.createdDate) }}</div>
                 </div>
                 <p class="text-purple-700 whitespace-pre-wrap">{{ comment.value }}</p>
+              </div>
+            </div>
+            
+            <p v-else class="text-purple-500 italic mb-6">No comments yet</p>
+            
+            <!-- Add Comment Form -->
+            <div class="bg-purple-50 rounded-lg border border-purple-200 p-4">
+              <h3 class="text-lg font-semibold text-purple-900 mb-3">Add a Comment</h3>
+              <Textarea
+                v-model="newComment"
+                rows="4"
+                class="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                placeholder="Write your comment here..."
+                :disabled="isSubmitting"
+              />
+              <div class="flex justify-end mt-3">
+                <Button
+                  label="Post Comment"
+                  icon="pi pi-send"
+                  @click="submitComment"
+                  :disabled="!newComment.trim() || isSubmitting"
+                  :loading="isSubmitting"
+                  class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-2 rounded-lg"
+                />
               </div>
             </div>
           </div>
@@ -114,15 +134,20 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
+import Textarea from 'primevue/textarea'
 import { createAuthenticatedClient } from '@/api/apiClient'
-import { Ticket, TicketStatus } from '@/api/apiclients/ZincApiClient'
+import { Ticket, TicketStatus, AddCommentToTicketRequest } from '@/api/apiclients/ZincApiClient'
 
 const router = useRouter()
 const route = useRoute()
 
 const ticket = ref<Ticket | null>(null)
 const projectShorthand = ref('')
+const reporterUsername = ref('')
+const projectKey = ref('')
+const newComment = ref('')
 const isLoading = ref(false)
+const isSubmitting = ref(false)
 const errorMessage = ref('')
 
 async function loadTicket() {
@@ -156,6 +181,9 @@ async function loadTicket() {
     const client = createAuthenticatedClient()
     const project = await client.projects(projectShorthand.value)
     
+    // Store project key for adding comments
+    projectKey.value = project.key || ''
+    
     // Find the ticket by index
     const foundTicket = project.tickets?.find(t => t.index === ticketIndex)
     
@@ -164,6 +192,17 @@ async function loadTicket() {
       ticket.value = null
     } else {
       ticket.value = foundTicket
+      
+      // Load reporter username
+      if (foundTicket.reporterKey) {
+        try {
+          const reporter = await client.user(foundTicket.reporterKey)
+          reporterUsername.value = reporter.username || 'Unknown'
+        } catch (error) {
+          console.error('Failed to load reporter:', error)
+          reporterUsername.value = 'Unknown'
+        }
+      }
     }
   } catch (error: any) {
     console.error('Failed to load ticket:', error)
@@ -213,6 +252,36 @@ function formatDate(date: Date | undefined): string {
     hour: '2-digit',
     minute: '2-digit'
   })
+}
+
+async function submitComment() {
+  if (!newComment.value.trim() || !ticket.value || !projectKey.value) return
+
+  isSubmitting.value = true
+  errorMessage.value = ''
+
+  try {
+    const client = createAuthenticatedClient()
+    
+    const request = new AddCommentToTicketRequest({
+      projectKey: projectKey.value,
+      ticketIndex: ticket.value.index,
+      comment: newComment.value
+    })
+    
+    await client.addComment(request)
+    
+    // Clear the comment field
+    newComment.value = ''
+    
+    // Reload the ticket to show the new comment
+    await loadTicket()
+  } catch (error: any) {
+    console.error('Failed to add comment:', error)
+    errorMessage.value = 'Failed to add comment. Please try again.'
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 onMounted(() => {

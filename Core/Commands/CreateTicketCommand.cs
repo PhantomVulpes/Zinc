@@ -34,7 +34,7 @@ public class CreateTicketCommandHandler : CommandHandler<CreateTicketCommand>
             Status = project.DefaultTicketStatus
         };
 
-        var updateProject = project.WithAddedTicket(ticket);
+        var updateProject = project.WithAddedTicket(ticket.Validate());
 
         await projectRepository.SaveAsync(updateProject.PrepareForSave());
     }

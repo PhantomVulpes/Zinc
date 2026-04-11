@@ -5,6 +5,8 @@ using Vulpes.Zinc.Api.Requests;
 using Vulpes.Zinc.Api.Responses;
 using Vulpes.Zinc.Api.Services;
 using Vulpes.Zinc.Core.Commands;
+using Vulpes.Zinc.Core.Models;
+using Vulpes.Zinc.Core.Queries;
 
 namespace Vulpes.Zinc.Api.Controllers;
 
@@ -45,5 +47,13 @@ public class UserController : ZincController
         await mediator.ExecuteCommandAsync(new LogInCommand(user));
 
         return Ok(response);
+    }
+
+    [HttpGet("user/{userKey}")]
+    [ProducesResponseType(typeof(RegisteredUser), StatusCodes.Status200OK)]
+    public async Task<ActionResult<RegisteredUser>> GetUserByKeyAsync(Guid userKey)
+    {
+        var user = await mediator.RequestResponseAsync(new GetUserByKeyQuery(userKey));
+        return Ok(user);
     }
 }

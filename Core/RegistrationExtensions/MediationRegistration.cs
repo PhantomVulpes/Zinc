@@ -21,6 +21,7 @@ public static class MediationRegistration
         .AddTransient<CommandHandler<RegisterNewUserCommand>, RegisterNewUserCommandHandler>()
         .AddTransient<CommandHandler<CreateNewProjectCommand>, CreateNewProjectCommandHandler>()
         .AddTransient<CommandHandler<CreateTicketCommand>, CreateTicketCommandHandler>()
+        .AddTransient<CommandHandler<AddCommentToTicketCommand>, AddCommentToTicketCommandHandler>()
         ;
 
     private static IServiceCollection InjectQueries(this IServiceCollection services) => services
@@ -28,6 +29,7 @@ public static class MediationRegistration
         .AddTransient<QueryHandler<GetProjectByKeyQuery, Project>, GetProjectByKeyQueryHandler>()
         .AddTransient<QueryHandler<GetAllAccessibleProjectsQuery, IQueryable<Project>>, GetAllAccessibleProjectsQueryHandler>()
         .AddTransient<QueryHandler<GetProjectByShorthandQuery, Project>, GetProjectByShorthandQueryHandler>()
+        .AddTransient<QueryHandler<GetUserByKeyQuery, RegisteredUser>, GetUserByKeyQueryHandler>()
         ;
 
     private static IServiceCollection InjectMediatorInternal(this IServiceCollection services)
@@ -41,6 +43,7 @@ public static class MediationRegistration
                 .Register(provider.GetRequiredService<CommandHandler<LogInCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<CreateNewProjectCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<CreateTicketCommand>>())
+                .Register(provider.GetRequiredService<CommandHandler<AddCommentToTicketCommand>>())
                 ;
 
             _ = mediator
@@ -48,6 +51,7 @@ public static class MediationRegistration
                 .Register(provider.GetRequiredService<QueryHandler<GetProjectByKeyQuery, Project>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetAllAccessibleProjectsQuery, IQueryable<Project>>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetProjectByShorthandQuery, Project>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetUserByKeyQuery, RegisteredUser>>())
                 ;
 
             return mediator;

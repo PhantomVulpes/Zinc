@@ -26,16 +26,7 @@ public record Ticket
 
     public TicketStatus Status { get; init; } = TicketStatus.Unknown;
 
-    public Ticket AddComment(Comment comment)
-    {
-        var comments = Comments.Append(comment);
-        return this with
-        {
-            Comments = comments,
-        };
-    }
-
-    public IValidationModel<Ticket> Validate()
+    public GenericValidationModel<Ticket> Validate()
     {
         var validationBuilder = new ValidationBuilder()
             .InvalidIf(() => Index <= 0, () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(Index)} cannot be below 1."))

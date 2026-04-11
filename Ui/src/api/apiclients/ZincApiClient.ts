@@ -193,6 +193,44 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
+    addComment(body: AddCommentToTicketRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/project/ticket/add-comment";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAddComment(_response);
+        });
+    }
+
+    protected processAddComment(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
     register(body: RegisterNewUserRequest | undefined): Promise<string> {
         let url_ = this.baseUrl + "/api/user/register";
         url_ = url_.replace(/[?&]$/, "");
@@ -273,6 +311,90 @@ export class Client {
         }
         return Promise.resolve<LoginResponse>(null as any);
     }
+
+    /**
+     * @return OK
+     */
+    user(userKey: string): Promise<RegisteredUser> {
+        let url_ = this.baseUrl + "/api/user/user/{userKey}";
+        if (userKey === undefined || userKey === null)
+            throw new globalThis.Error("The parameter 'userKey' must be defined.");
+        url_ = url_.replace("{userKey}", encodeURIComponent("" + userKey));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUser(_response);
+        });
+    }
+
+    protected processUser(response: Response): Promise<RegisteredUser> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RegisteredUser.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RegisteredUser>(null as any);
+    }
+}
+
+export class AddCommentToTicketRequest implements IAddCommentToTicketRequest {
+    projectKey?: string;
+    ticketIndex?: number;
+    comment?: string | null;
+
+    constructor(data?: IAddCommentToTicketRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.projectKey = _data["projectKey"] !== undefined ? _data["projectKey"] : null as any;
+            this.ticketIndex = _data["ticketIndex"] !== undefined ? _data["ticketIndex"] : null as any;
+            this.comment = _data["comment"] !== undefined ? _data["comment"] : null as any;
+        }
+    }
+
+    static fromJS(data: any): AddCommentToTicketRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddCommentToTicketRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["projectKey"] = this.projectKey !== undefined ? this.projectKey : null as any;
+        data["ticketIndex"] = this.ticketIndex !== undefined ? this.ticketIndex : null as any;
+        data["comment"] = this.comment !== undefined ? this.comment : null as any;
+        return data;
+    }
+}
+
+export interface IAddCommentToTicketRequest {
+    projectKey?: string;
+    ticketIndex?: number;
+    comment?: string | null;
 }
 
 export class Comment implements IComment {
@@ -661,6 +783,74 @@ export interface IRegisterNewUserRequest {
     lastName?: string | null;
     username?: string | null;
     passwordRaw?: string | null;
+}
+
+export class RegisteredUser implements IRegisteredUser {
+    key?: string;
+    editingToken?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    username?: string | null;
+    passwordHash?: string | null;
+    creationDate?: Date;
+    lastLoginDate?: Date;
+    role?: Role;
+
+    constructor(data?: IRegisteredUser) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.key = _data["key"] !== undefined ? _data["key"] : null as any;
+            this.editingToken = _data["editingToken"] !== undefined ? _data["editingToken"] : null as any;
+            this.firstName = _data["firstName"] !== undefined ? _data["firstName"] : null as any;
+            this.lastName = _data["lastName"] !== undefined ? _data["lastName"] : null as any;
+            this.username = _data["username"] !== undefined ? _data["username"] : null as any;
+            this.passwordHash = _data["passwordHash"] !== undefined ? _data["passwordHash"] : null as any;
+            this.creationDate = _data["creationDate"] ? new Date(_data["creationDate"].toString()) : null as any;
+            this.lastLoginDate = _data["lastLoginDate"] ? new Date(_data["lastLoginDate"].toString()) : null as any;
+            this.role = _data["role"] !== undefined ? _data["role"] : null as any;
+        }
+    }
+
+    static fromJS(data: any): RegisteredUser {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisteredUser();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["key"] = this.key !== undefined ? this.key : null as any;
+        data["editingToken"] = this.editingToken !== undefined ? this.editingToken : null as any;
+        data["firstName"] = this.firstName !== undefined ? this.firstName : null as any;
+        data["lastName"] = this.lastName !== undefined ? this.lastName : null as any;
+        data["username"] = this.username !== undefined ? this.username : null as any;
+        data["passwordHash"] = this.passwordHash !== undefined ? this.passwordHash : null as any;
+        data["creationDate"] = this.creationDate ? this.creationDate.toISOString() : null as any;
+        data["lastLoginDate"] = this.lastLoginDate ? this.lastLoginDate.toISOString() : null as any;
+        data["role"] = this.role !== undefined ? this.role : null as any;
+        return data;
+    }
+}
+
+export interface IRegisteredUser {
+    key?: string;
+    editingToken?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    username?: string | null;
+    passwordHash?: string | null;
+    creationDate?: Date;
+    lastLoginDate?: Date;
+    role?: Role;
 }
 
 export enum Role {
