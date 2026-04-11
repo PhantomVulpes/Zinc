@@ -11,13 +11,16 @@ public record RegisteredUser : AggregateRoot
     public static RegisteredUser Default => Empty with
     {
         Key = Guid.NewGuid(),
-        Role = Role.Basic
+        Role = Role.Basic,
+        CreationDate = DateTimeOffset.UtcNow,
     };
 
     public string FirstName { get; init; } = string.Empty;
     public string LastName { get; init; } = string.Empty;
     public string Username { get; init; } = string.Empty;
     public string PasswordHash { get; init; } = string.Empty;
+    public DateTimeOffset CreationDate { get; init; } = DateTimeOffset.MinValue;
+    public DateTimeOffset LastLoginDate { get; init; } = DateTimeOffset.MinValue;
 
     public Role Role { get; init; } = Role.Unknown;
 
