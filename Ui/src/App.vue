@@ -1,18 +1,17 @@
+<script setup lang="ts">
+import AppHeader from './components/AppHeader.vue'
+import Toast from 'primevue/toast'
+</script>
+
 <template>
-  <div id="app">
-    <router-view />
+  <Toast />
+  <div class="flex flex-col min-h-screen bg-gradient-to-br from-lavender-50 via-purple-50 to-lavender-100">
+    <AppHeader />
+    <main class="flex-1">
+      <router-view />
+    </main>
   </div>
 </template>
 
-<script setup lang="ts">
-// App component
-</script>
-
 <style scoped>
-#app {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
-}
 </style>
