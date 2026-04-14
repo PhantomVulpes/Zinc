@@ -74,11 +74,11 @@
           <div v-if="project.tickets && project.tickets.length > 0" class="mt-8">
             <h2 class="text-xl font-semibold text-purple-900 mb-4">Tickets</h2>
             <div class="space-y-3">
-              <div
+              <router-link
                 v-for="(ticket, index) in sortedTickets"
                 :key="ticket.index ?? index"
-                class="bg-white rounded-lg border border-lavender-300 p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                @click="router.push(`/ticket/${project.shorthand}-${ticket.index}`)"
+                :to="`/ticket/${project.shorthand}-${ticket.index}`"
+                class="block bg-white rounded-lg border border-lavender-300 p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer no-underline"
               >
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
@@ -106,7 +106,7 @@
                     </span>
                   </div>
                 </div>
-              </div>
+              </router-link>
             </div>
           </div>
         </div>

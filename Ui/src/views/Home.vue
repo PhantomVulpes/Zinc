@@ -39,20 +39,16 @@
 
           <!-- Projects List -->
           <div v-if="!isLoadingProjects && projects.length > 0" class="space-y-4">
-            <div
+            <router-link
               v-for="project in projects"
               :key="project.key"
-              class="bg-white rounded-lg border border-lavender-300 p-6 shadow-sm hover:shadow-md transition-shadow"
+              :to="`/projects/${project.shorthand}`"
+              class="block bg-white rounded-lg border border-lavender-300 p-6 shadow-sm hover:shadow-md transition-shadow no-underline"
             >
               <!-- Project Header -->
               <div class="flex items-start justify-between mb-3">
                 <h3 class="text-xl font-bold text-purple-900">
-                  <router-link
-                    :to="`/projects/${project.shorthand}`"
-                    class="hover:text-purple-600 transition-colors cursor-pointer"
-                  >
-                    {{ project.name }} <span class="text-sm text-purple-600">({{ project.shorthand }})</span>
-                  </router-link>
+                  {{ project.name }} <span class="text-sm text-purple-600">({{ project.shorthand }})</span>
                 </h3>
                 <div class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">
                   {{ project.tickets?.length || 0 }} {{ project.tickets?.length === 1 ? 'ticket' : 'tickets' }}
@@ -75,7 +71,7 @@
               <div v-else class="text-purple-500 text-sm italic">
                 No labels
               </div>
-            </div>
+            </router-link>
           </div>
 
           <!-- Empty State -->
