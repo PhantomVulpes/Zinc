@@ -86,7 +86,15 @@
                       <span class="text-purple-600 font-semibold text-sm">{{ project.shorthand }}-{{ ticket.index }}</span>
                     </div>
                     <h3 class="font-semibold text-purple-900">{{ ticket.title }}</h3>
-                    <p v-if="ticket.description" class="text-sm text-purple-700 mt-1">{{ ticket.description }}</p>
+                    <p v-if="ticket.description" class="text-sm text-purple-700 mt-1 mb-3">{{ ticket.description }}</p>
+                    <span
+                      v-if="ticket.labels && ticket.labels.length > 0"
+                      v-for="label in ticket.labels"
+                      :key="label"
+                      class="bg-lavender-100 text-purple-800 px-4 py-2 mr-1 rounded-full text-sm font-medium"
+                    >
+                      <i class="pi pi-tag mr-1"></i>{{ label }}
+                    </span>
                   </div>
                   <div class="ml-4">
                     <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">

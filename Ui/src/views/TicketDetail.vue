@@ -4,7 +4,7 @@
       <div class="max-w-4xl mx-auto">
         <!-- Back Button -->
         <ZincButton
-          label="Back to Project"
+          :label="'Back to ' + projectName"
           icon="pi pi-arrow-left"
           severity="secondary"
           @click="router.push(`/projects/${projectShorthand}`)"
@@ -216,6 +216,7 @@ const router = useRouter()
 const route = useRoute()
 
 const ticket = ref<Ticket | null>(null)
+const projectName = ref('')
 const projectShorthand = ref('')
 const reporterUsername = ref('')
 const projectKey = ref('')
@@ -263,6 +264,7 @@ async function loadTicket() {
     
     // Store project key for adding comments
     projectKey.value = project.key || ''
+    projectName.value = project.name || ''
     
     // Find the ticket by index
     const foundTicket = project.tickets?.find(t => t.index === ticketIndex)
