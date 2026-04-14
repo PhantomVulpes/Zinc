@@ -39,6 +39,7 @@
                 </label>
                 <InputText
                   id="ticketTitle"
+                  ref="titleInputRef"
                   v-model="ticketTitle"
                   placeholder="Enter ticket title"
                   :disabled="isLoading"
@@ -59,6 +60,19 @@
                   rows="6"
                   class="w-full border-2 border-lavender-300 rounded-lg px-4 py-2 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all resize-none"
                 />
+              </div>
+
+              <!-- Redirect Checkbox -->
+              <div class="flex items-center gap-2">
+                <Checkbox
+                  id="redirectOnCreate"
+                  v-model="redirectOnCreate"
+                  :binary="true"
+                  :disabled="isLoading"
+                />
+                <label for="redirectOnCreate" class="text-purple-900 cursor-pointer">
+                  Redirect on ticket creation
+                </label>
               </div>
 
               <!-- Action Buttons -->
@@ -94,6 +108,7 @@ import Card from 'primevue/card'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Message from 'primevue/message'
+import Checkbox from 'primevue/checkbox'
 import ZincButton from '@/components/ZincButton.vue'
 import { createAuthenticatedClient } from '@/api/apiClient'
 import { CreateTicketRequest } from '@/api/apiclients/ZincApiClient'
@@ -106,6 +121,8 @@ const ticketDescription = ref('')
 const isLoading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
+const redirectOnCreate = ref(false)
+const titleInputRef = ref<any>(null)
 
 async function handleSubmit() {
   errorMessage.value = ''
@@ -135,16 +152,22 @@ async function handleSubmit() {
     
     await client.createTicket(projectShorthand, request)
     
-    successMessage.value = 'Ticket created successfully!'
-    
     // Clear form
     ticketTitle.value = ''
     ticketDescription.value = ''
     
-    // Redirect back to project detail after 1.5 seconds
-    setTimeout(() => {
+    if (redirectOnCreate.value) {
+      // Redirect immediately
       router.push(`/projects/${projectShorthand}`)
-    }, 1500)
+    } else {
+      // Stay on page, show success message, and focus title input
+      successMessage.value = 'Ticket created successfully!'
+      
+      // Focus the title input for quick next ticket creation
+      setTimeout(() => {
+        titleInputRef.value?.$el?.focus()
+      }, 100)
+    }
   } catch (error: any) {
     console.error('Failed to create ticket:', error)
     errorMessage.value = 'Failed to create ticket. Please try again.'

@@ -75,7 +75,7 @@
             <h2 class="text-xl font-semibold text-purple-900 mb-4">Tickets</h2>
             <div class="space-y-3">
               <div
-                v-for="(ticket, index) in project.tickets"
+                v-for="(ticket, index) in sortedTickets"
                 :key="ticket.index ?? index"
                 class="bg-white rounded-lg border border-lavender-300 p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
                 @click="router.push(`/ticket/${project.shorthand}-${ticket.index}`)"
@@ -97,7 +97,11 @@
                     </span>
                   </div>
                   <div class="ml-4">
-                    <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">
+                    <span :class="[
+                      'px-3 py-1 rounded-full text-xs font-medium',
+                      getTicketStatusClasses(ticket.status).combined
+                    ]">
+                      <i :class="['mr-1', getTicketStatusIcon(ticket.status)]"></i>
                       {{ formatTicketStatus(ticket.status) }}
                     </span>
                   </div>
@@ -112,12 +116,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import Message from 'primevue/message'
 import ZincButton from '@/components/ZincButton.vue'
 import { createAuthenticatedClient } from '@/api/apiClient'
 import { Project, ProjectStatus, TicketStatus } from '@/api/apiclients/ZincApiClient'
+import { getTicketStatusClasses, getTicketStatusIcon, formatTicketStatus } from '@/utils/ticketStatus'
 
 const router = useRouter()
 const route = useRoute()
@@ -125,6 +130,29 @@ const route = useRoute()
 const project = ref<Project | null>(null)
 const isLoading = ref(false)
 const errorMessage = ref('')
+
+// Define custom ticket status sort order
+const statusSortOrder: Record<number, number> = {
+  [TicketStatus._0]: 0, // Unknown - highest priority
+  [TicketStatus._3]: 1, // In Progress
+  [TicketStatus._2]: 2, // Open
+  [TicketStatus._1]: 3, // In Review
+  [TicketStatus._4]: 4, // Complete
+  [TicketStatus._5]: 5  // Cancelled
+}
+
+// Computed property to get sorted tickets
+const sortedTickets = computed(() => {
+  if (!project.value?.tickets) return []
+  
+  return [...project.value.tickets].sort((a, b) => {
+    const statusA = a.status ?? TicketStatus._0
+    const statusB = b.status ?? TicketStatus._0
+    const orderA = statusSortOrder[statusA] ?? 999
+    const orderB = statusSortOrder[statusB] ?? 999
+    return orderA - orderB
+  })
+})
 
 async function loadProject() {
   const projectShorthand = route.params.projectShorthand as string
@@ -156,21 +184,6 @@ function formatProjectStatus(status: ProjectStatus | undefined): string {
     [ProjectStatus._1]: 'Open',
     [ProjectStatus._2]: 'Closed',
     [ProjectStatus._3]: 'Archived'
-  }
-  
-  return statusMap[status] || 'Unknown'
-}
-
-function formatTicketStatus(status: TicketStatus | undefined): string {
-  if (status === undefined) return 'Unknown'
-  
-  const statusMap: Record<number, string> = {
-    [TicketStatus._0]: 'Unknown',
-    [TicketStatus._1]: 'In Review',
-    [TicketStatus._2]: 'Open',
-    [TicketStatus._3]: 'In Progress',
-    [TicketStatus._4]: 'Complete',
-    [TicketStatus._5]: 'Cancelled'
   }
   
   return statusMap[status] || 'Unknown'
