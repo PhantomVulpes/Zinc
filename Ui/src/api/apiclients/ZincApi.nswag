@@ -3,7 +3,7 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "http://localhost:60000/swagger/v0.6/swagger.json",
+      "url": "http://localhost:60000/swagger/v0.7/swagger.json",
       "output": null,
       "newLineBehavior": "Auto"
     }
