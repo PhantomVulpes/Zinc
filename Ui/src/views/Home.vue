@@ -120,7 +120,7 @@ async function loadProjects() {
   try {
     const client = createAuthenticatedClient()
     const result = await client.projectsAll()
-    projects.value = result || []
+    projects.value = (result || []).sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
   } catch (error: any) {
     console.error('Failed to load projects:', error)
     errorMessage.value = 'Failed to load projects. Please try again.'
