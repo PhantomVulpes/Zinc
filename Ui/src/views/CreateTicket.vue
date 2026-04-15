@@ -62,6 +62,22 @@
                 />
               </div>
 
+              <!-- Ticket Labels -->
+              <div class="flex flex-col gap-2">
+                <label for="ticketLabels" class="font-semibold text-purple-900">
+                  Labels
+                </label>
+                <InputText
+                  id="ticketLabels"
+                  :model-value="ticketLabels.join(', ')"
+                  @update:model-value="ticketLabels = ($event || '').split(',').map((l: string) => l.trim()).filter((l: string) => l)"
+                  placeholder="Enter labels separated by commas (optional)"
+                  :disabled="isLoading"
+                  class="w-full border-2 border-lavender-300 rounded-lg px-4 py-2 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all"
+                />
+                <p class="text-sm text-purple-600">Separate multiple labels with commas</p>
+              </div>
+
               <!-- Redirect Checkbox -->
               <div class="flex items-center gap-2">
                 <Checkbox
@@ -118,6 +134,7 @@ const route = useRoute()
 
 const ticketTitle = ref('')
 const ticketDescription = ref('')
+const ticketLabels = ref<string[]>([])
 const isLoading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
@@ -147,7 +164,8 @@ async function handleSubmit() {
     const client = createAuthenticatedClient()
     const request = new CreateTicketRequest({
       title: ticketTitle.value.trim(),
-      description: ticketDescription.value?.trim() || ''
+      description: ticketDescription.value?.trim() || '',
+      labels: ticketLabels.value
     })
     
     await client.createTicket(projectShorthand, request)
@@ -155,6 +173,7 @@ async function handleSubmit() {
     // Clear form
     ticketTitle.value = ''
     ticketDescription.value = ''
+    ticketLabels.value = []
     
     if (redirectOnCreate.value) {
       // Redirect immediately

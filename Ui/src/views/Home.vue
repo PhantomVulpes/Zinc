@@ -3,7 +3,17 @@
     <div class="container mx-auto px-4 py-12">
       <div class="max-w-4xl mx-auto">
         <!-- Description Section -->
-            <h1 class="text-4xl font-bold text-purple-900 mb-6">Zinc project Management</h1>
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-lavender-200 p-8 mb-8">
+          <div class="prose prose-lg max-w-none">
+            <div class="flex items-center justify-between mb-6">
+              <h1 class="text-4xl font-bold text-purple-900 m-0">Zinc</h1>
+              <img src="/zinc.svg" alt="Zinc" class="w-10 h-10" />
+            </div>
+            <p class="text-purple-800 text-lg leading-relaxed mb-4">
+              Mental speed on tap.
+            </p>
+          </div>
+        </div>
 
         <!-- Project Actions -->
         <div v-if="isAuthenticated" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-lavender-200 p-8 mb-8">
