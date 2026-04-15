@@ -40,6 +40,14 @@ public class EditTicketCommandHandler : CommandHandler<EditTicketCommand>
             Status = command.Status
         };
 
+        if (ticket.Status != TicketStatus.Complete && updatedTicket.Status == TicketStatus.Complete)
+        {
+            updatedTicket = updatedTicket with
+            {
+                CompletedDate = DateTime.UtcNow
+            };
+        }
+
         var updatedProject = project.WithUpdatedTicket(updatedTicket.Validate());
 
         await projectRepository.SaveAsync(updatedProject.PrepareForSave());
