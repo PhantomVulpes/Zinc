@@ -37,7 +37,7 @@
           <!-- Project Shorthand -->
           <div class="flex flex-col gap-2">
             <label for="projectShorthand" class="font-semibold text-purple-900">
-              Project Shorthand <span class="text-red-500">*</span>
+              Project Shorthand - used for page urls <span class="text-red-500">*</span>
             </label>
             <InputText
               id="projectShorthand"
