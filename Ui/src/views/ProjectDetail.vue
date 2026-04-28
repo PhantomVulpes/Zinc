@@ -83,38 +83,6 @@
             <p v-else class="text-purple-700 leading-relaxed">{{ project.description }}</p>
           </div>
 
-          <!-- Statistics and Status -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
-              <div class="text-sm text-purple-600 font-medium mb-1">Total Tickets</div>
-              <div class="text-3xl font-bold text-purple-900">{{ project.tickets?.length || 0 }}</div>
-            </div>
-            <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
-              <div class="text-sm text-purple-600 font-medium mb-1">Project Status</div>
-              <Select
-                v-if="isEditMode"
-                v-model="editedStatus"
-                :options="projectStatusOptions"
-                option-label="label"
-                option-value="value"
-                class="w-full mt-1"
-              />
-              <div v-else class="text-xl font-semibold text-purple-900">{{ formatProjectStatus(project.status) }}</div>
-            </div>
-            <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
-              <div class="text-sm text-purple-600 font-medium mb-1">Default Ticket Status</div>
-              <Select
-                v-if="isEditMode"
-                v-model="editedDefaultTicketStatus"
-                :options="ticketStatusOptions"
-                option-label="label"
-                option-value="value"
-                class="w-full mt-1"
-              />
-              <div v-else class="text-xl font-semibold text-purple-900">{{ formatTicketStatus(project.defaultTicketStatus ?? TicketStatus._2) }}</div>
-            </div>
-          </div>
-
           <!-- Labels -->
           <div class="mb-6">
             <h2 class="text-xl font-semibold text-purple-900 mb-3">Labels</h2>
@@ -142,6 +110,72 @@
                 </span>
               </div>
               <p v-else class="text-purple-500 italic">No labels assigned to this project</p>
+            </div>
+          </div>
+
+          <!-- Statistics and Status -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+              <div class="text-sm text-purple-600 font-medium mb-1">Project Status</div>
+              <Select
+                v-if="isEditMode"
+                v-model="editedStatus"
+                :options="projectStatusOptions"
+                option-label="label"
+                option-value="value"
+                class="w-full mt-1"
+              />
+              <div v-else class="text-xl font-semibold text-purple-900">{{ formatProjectStatus(project.status) }}</div>
+            </div>
+            <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+              <div class="text-sm text-purple-600 font-medium mb-1">Total Tickets</div>
+              <div class="text-3xl font-bold text-purple-900">{{ ticketStatusCounts.total }}</div>
+            </div>
+            <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+              <div class="text-sm text-purple-600 font-medium mb-1">Default Ticket Status</div>
+              <Select
+                v-if="isEditMode"
+                v-model="editedDefaultTicketStatus"
+                :options="ticketStatusOptions"
+                option-label="label"
+                option-value="value"
+                class="w-full mt-1"
+              />
+              <div v-else class="text-xl font-semibold text-purple-900">{{ formatTicketStatus(project.defaultTicketStatus ?? TicketStatus._2) }}</div>
+            </div>
+          </div>
+
+          <!-- Ticket Status Counters -->
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+            <div :class="['rounded-lg p-3 border shadow-sm', getTicketStatusClasses(TicketStatus._3).bg]">
+              <div :class="['text-xs font-medium mb-1', getTicketStatusClasses(TicketStatus._3).text]">
+                <i :class="[getTicketStatusIcon(TicketStatus._3), 'mr-1']"></i>{{ formatTicketStatus(TicketStatus._3) }}
+              </div>
+              <div :class="['text-2xl font-bold', getTicketStatusClasses(TicketStatus._3).text]">{{ ticketStatusCounts.inProgress }}</div>
+            </div>
+            <div :class="['rounded-lg p-3 border shadow-sm', getTicketStatusClasses(TicketStatus._1).bg]">
+              <div :class="['text-xs font-medium mb-1', getTicketStatusClasses(TicketStatus._1).text]">
+                <i :class="[getTicketStatusIcon(TicketStatus._1), 'mr-1']"></i>{{ formatTicketStatus(TicketStatus._1) }}
+              </div>
+              <div :class="['text-2xl font-bold', getTicketStatusClasses(TicketStatus._1).text]">{{ ticketStatusCounts.inReview }}</div>
+            </div>
+            <div :class="['rounded-lg p-3 border shadow-sm', getTicketStatusClasses(TicketStatus._2).bg]">
+              <div :class="['text-xs font-medium mb-1', getTicketStatusClasses(TicketStatus._2).text]">
+                <i :class="[getTicketStatusIcon(TicketStatus._2), 'mr-1']"></i>{{ formatTicketStatus(TicketStatus._2) }}
+              </div>
+              <div :class="['text-2xl font-bold', getTicketStatusClasses(TicketStatus._2).text]">{{ ticketStatusCounts.open }}</div>
+            </div>
+            <div :class="['rounded-lg p-3 border shadow-sm', getTicketStatusClasses(TicketStatus._4).bg]">
+              <div :class="['text-xs font-medium mb-1', getTicketStatusClasses(TicketStatus._4).text]">
+                <i :class="[getTicketStatusIcon(TicketStatus._4), 'mr-1']"></i>{{ formatTicketStatus(TicketStatus._4) }}
+              </div>
+              <div :class="['text-2xl font-bold', getTicketStatusClasses(TicketStatus._4).text]">{{ ticketStatusCounts.complete }}</div>
+            </div>
+            <div :class="['rounded-lg p-3 border shadow-sm', getTicketStatusClasses(TicketStatus._5).bg]">
+              <div :class="['text-xs font-medium mb-1', getTicketStatusClasses(TicketStatus._5).text]">
+                <i :class="[getTicketStatusIcon(TicketStatus._5), 'mr-1']"></i>{{ formatTicketStatus(TicketStatus._5) }}
+              </div>
+              <div :class="['text-2xl font-bold', getTicketStatusClasses(TicketStatus._5).text]">{{ ticketStatusCounts.cancelled }}</div>
             </div>
           </div>
 
@@ -249,6 +283,50 @@ const sortedTickets = computed(() => {
   })
 })
 
+// Computed properties for ticket status counts
+const ticketStatusCounts = computed(() => {
+  if (!project.value?.tickets) return {
+    total: 0,
+    inReview: 0,
+    open: 0,
+    inProgress: 0,
+    complete: 0,
+    cancelled: 0
+  }
+  
+  const counts = {
+    total: project.value.tickets.length,
+    inReview: 0,
+    open: 0,
+    inProgress: 0,
+    complete: 0,
+    cancelled: 0
+  }
+  
+  project.value.tickets.forEach(ticket => {
+    const status = ticket.status ?? TicketStatus._0
+    switch (status) {
+      case TicketStatus._1:
+        counts.inReview++
+        break
+      case TicketStatus._2:
+        counts.open++
+        break
+      case TicketStatus._3:
+        counts.inProgress++
+        break
+      case TicketStatus._4:
+        counts.complete++
+        break
+      case TicketStatus._5:
+        counts.cancelled++
+        break
+    }
+  })
+  
+  return counts
+})
+
 async function loadProject() {
   const projectShorthand = route.params.projectShorthand as string
   
@@ -285,7 +363,6 @@ function formatProjectStatus(status: ProjectStatus | undefined): string {
 }
 
 const ticketStatusOptions = [
-  { label: 'Unknown', value: TicketStatus._0 },
   { label: 'In Review', value: TicketStatus._1 },
   { label: 'Open', value: TicketStatus._2 },
   { label: 'In Progress', value: TicketStatus._3 },
@@ -294,7 +371,6 @@ const ticketStatusOptions = [
 ]
 
 const projectStatusOptions = [
-  { label: 'Unknown', value: ProjectStatus._0 },
   { label: 'Open', value: ProjectStatus._1 },
   { label: 'Closed', value: ProjectStatus._2 },
   { label: 'Archived', value: ProjectStatus._3 }
