@@ -148,11 +148,8 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    createTicket(projectShorthand: string, body: CreateTicketRequest | undefined): Promise<Project> {
-        let url_ = this.baseUrl + "/api/project/projects/{projectShorthand}/create-ticket";
-        if (projectShorthand === undefined || projectShorthand === null)
-            throw new globalThis.Error("The parameter 'projectShorthand' must be defined.");
-        url_ = url_.replace("{projectShorthand}", encodeURIComponent("" + projectShorthand));
+    create2(body: CreateTicketRequest | undefined): Promise<Project> {
+        let url_ = this.baseUrl + "/api/project/ticket/create";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -167,11 +164,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateTicket(_response);
+            return this.processCreate2(_response);
         });
     }
 
-    protected processCreateTicket(response: Response): Promise<Project> {
+    protected processCreate2(response: Response): Promise<Project> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -251,6 +248,44 @@ export class Client {
     }
 
     protected processEdit(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    edit2(body: EditProjectRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/project/projects/edit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processEdit2(_response);
+        });
+    }
+
+    protected processEdit2(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -524,6 +559,7 @@ export interface ICreateNewProjectRequest {
 }
 
 export class CreateTicketRequest implements ICreateTicketRequest {
+    projectKey?: string;
     title?: string | null;
     description?: string | null;
     labels?: string[] | null;
@@ -539,6 +575,7 @@ export class CreateTicketRequest implements ICreateTicketRequest {
 
     init(_data?: any) {
         if (_data) {
+            this.projectKey = _data["projectKey"] !== undefined ? _data["projectKey"] : null as any;
             this.title = _data["title"] !== undefined ? _data["title"] : null as any;
             this.description = _data["description"] !== undefined ? _data["description"] : null as any;
             if (Array.isArray(_data["labels"])) {
@@ -561,6 +598,7 @@ export class CreateTicketRequest implements ICreateTicketRequest {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["projectKey"] = this.projectKey !== undefined ? this.projectKey : null as any;
         data["title"] = this.title !== undefined ? this.title : null as any;
         data["description"] = this.description !== undefined ? this.description : null as any;
         if (Array.isArray(this.labels)) {
@@ -573,8 +611,91 @@ export class CreateTicketRequest implements ICreateTicketRequest {
 }
 
 export interface ICreateTicketRequest {
+    projectKey?: string;
     title?: string | null;
     description?: string | null;
+    labels?: string[] | null;
+}
+
+export class EditProjectRequest implements IEditProjectRequest {
+    projectKey?: string;
+    projectName?: string | null;
+    description?: string | null;
+    defaultTicketStatus?: TicketStatus;
+    allowedUserKeys?: string[] | null;
+    projectStatus?: ProjectStatus;
+    labels?: string[] | null;
+
+    constructor(data?: IEditProjectRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.projectKey = _data["projectKey"] !== undefined ? _data["projectKey"] : null as any;
+            this.projectName = _data["projectName"] !== undefined ? _data["projectName"] : null as any;
+            this.description = _data["description"] !== undefined ? _data["description"] : null as any;
+            this.defaultTicketStatus = _data["defaultTicketStatus"] !== undefined ? _data["defaultTicketStatus"] : null as any;
+            if (Array.isArray(_data["allowedUserKeys"])) {
+                this.allowedUserKeys = [] as any;
+                for (let item of _data["allowedUserKeys"])
+                    this.allowedUserKeys!.push(item);
+            }
+            else {
+                this.allowedUserKeys = null as any;
+            }
+            this.projectStatus = _data["projectStatus"] !== undefined ? _data["projectStatus"] : null as any;
+            if (Array.isArray(_data["labels"])) {
+                this.labels = [] as any;
+                for (let item of _data["labels"])
+                    this.labels!.push(item);
+            }
+            else {
+                this.labels = null as any;
+            }
+        }
+    }
+
+    static fromJS(data: any): EditProjectRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditProjectRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["projectKey"] = this.projectKey !== undefined ? this.projectKey : null as any;
+        data["projectName"] = this.projectName !== undefined ? this.projectName : null as any;
+        data["description"] = this.description !== undefined ? this.description : null as any;
+        data["defaultTicketStatus"] = this.defaultTicketStatus !== undefined ? this.defaultTicketStatus : null as any;
+        if (Array.isArray(this.allowedUserKeys)) {
+            data["allowedUserKeys"] = [];
+            for (let item of this.allowedUserKeys)
+                data["allowedUserKeys"].push(item);
+        }
+        data["projectStatus"] = this.projectStatus !== undefined ? this.projectStatus : null as any;
+        if (Array.isArray(this.labels)) {
+            data["labels"] = [];
+            for (let item of this.labels)
+                data["labels"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IEditProjectRequest {
+    projectKey?: string;
+    projectName?: string | null;
+    description?: string | null;
+    defaultTicketStatus?: TicketStatus;
+    allowedUserKeys?: string[] | null;
+    projectStatus?: ProjectStatus;
     labels?: string[] | null;
 }
 

@@ -162,13 +162,18 @@ async function handleSubmit() {
 
   try {
     const client = createAuthenticatedClient()
+    
+    // Get the project to obtain its key
+    const project = await client.projects(projectShorthand)
+    
     const request = new CreateTicketRequest({
+      projectKey: project.key,
       title: ticketTitle.value.trim(),
       description: ticketDescription.value?.trim() || '',
       labels: ticketLabels.value
     })
     
-    await client.createTicket(projectShorthand, request)
+    await client.create2(request)
     
     // Clear form
     ticketTitle.value = ''

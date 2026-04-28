@@ -41,13 +41,11 @@ public class ProjectController : ZincController
         return Ok(project);
     }
 
-    [HttpPost("projects/{projectShorthand}/create-ticket")]
+    [HttpPost("ticket/create")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<Project>> CreateNewTicketAsync(string projectShorthand, CreateTicketRequest request)
+    public async Task<ActionResult<Project>> CreateNewTicketAsync(CreateTicketRequest request)
     {
-        var project = await mediator.RequestResponseAsync(new GetProjectByShorthandQuery(projectShorthand, RegisteredUser.Key));
-
-        await mediator.ExecuteCommandAsync(request.ToCommand(project.Key, RegisteredUser.Key));
+        await mediator.ExecuteCommandAsync(request.ToCommand(RegisteredUser.Key));
 
         return Ok();
     }
@@ -64,6 +62,15 @@ public class ProjectController : ZincController
     [HttpPost("ticket/edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> EditTicketAsync(EditTicketRequest request)
+    {
+        await mediator.ExecuteCommandAsync(request.ToCommand(RegisteredUser.Key));
+
+        return Ok();
+    }
+
+    [HttpPost("projects/edit")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> EditProjectAsync(EditProjectRequest request)
     {
         await mediator.ExecuteCommandAsync(request.ToCommand(RegisteredUser.Key));
 
