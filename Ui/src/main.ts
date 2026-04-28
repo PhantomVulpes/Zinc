@@ -8,6 +8,7 @@ import Home from './views/Home.vue'
 import Register from './views/Register.vue'
 import Login from './views/Login.vue'
 import CreateProject from './views/CreateProject.vue'
+import EditProject from './views/EditProject.vue'
 import ProjectDetail from './views/ProjectDetail.vue'
 import CreateTicket from './views/CreateTicket.vue'
 import TicketDetail from './views/TicketDetail.vue'
@@ -34,6 +35,11 @@ const router = createRouter({
       path: '/projects/create',
       name: 'CreateProject',
       component: CreateProject
+    },
+    {
+      path: '/projects/:projectShorthand/edit',
+      name: 'EditProject',
+      component: EditProject
     },
     {
       path: '/projects/:projectShorthand',

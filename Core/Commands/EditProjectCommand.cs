@@ -27,7 +27,7 @@ public class EditProjectCommandHandler : CommandHandler<EditProjectCommand>
             Name = command.ProjectName,
             Description = command.Description,
             DefaultTicketStatus = command.DefaultTicketStatus,
-            AllowedUserKeys = command.AllowedUserKeys,
+            // AllowedUserKeys = command.AllowedUserKeys,
             Status = command.ProjectStatus,
             Labels = command.Labels,
         };

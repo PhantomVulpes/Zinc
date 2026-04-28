@@ -33,6 +33,7 @@ public record Project : AggregateRoot
             .InvalidIf(() => Key == Guid.Empty, () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(Key)} cannot be empty."))
             .InvalidIf(() => string.IsNullOrEmpty(Name), () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(Name)} is required."))
             .InvalidIf(() => string.IsNullOrEmpty(Shorthand), () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(Shorthand)} is required."))
+            .InvalidIf(() => !AllowedUserKeys.Any(), () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(AllowedUserKeys)} must contain at least one user."))
             ;
 
         return new AggregateRootValidationModel<Project>(this, validationBuilder);
