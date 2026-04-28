@@ -8,7 +8,7 @@ using Vulpes.Zinc.Core.Security;
 
 namespace Vulpes.Zinc.Core.Commands;
 
-public record CreateTicketCommand(Guid ProjectKey, string Title, string Description, Guid CreatorKey) : Command;
+public record CreateTicketCommand(Guid ProjectKey, string Title, string Description, IEnumerable<string> Labels, Guid CreatorKey) : Command;
 public class CreateTicketCommandHandler : CommandHandler<CreateTicketCommand>
 {
     private readonly IModelRepository<Project> projectRepository;
@@ -31,7 +31,8 @@ public class CreateTicketCommandHandler : CommandHandler<CreateTicketCommand>
             Title = command.Title,
             Description = command.Description,
             ReporterKey = command.CreatorKey,
-            Status = project.DefaultTicketStatus
+            Status = project.DefaultTicketStatus,
+            Labels = command.Labels
         };
 
         var updateProject = project.WithAddedTicket(ticket.Validate());

@@ -4,7 +4,7 @@
       <div class="max-w-4xl mx-auto">
         <!-- Back Button -->
         <ZincButton
-          label="Back to Project"
+          :label="'Back to ' + projectName"
           icon="pi pi-arrow-left"
           severity="secondary"
           @click="router.push(`/projects/${projectShorthand}`)"
@@ -81,10 +81,11 @@
                   'px-4 py-2 rounded-full text-sm font-medium transition-all',
                   isEditMode ? 'cursor-pointer hover:scale-105' : 'cursor-default',
                   (isEditMode ? editedStatus : ticket.status) === status
-                    ? getStatusClass(status) + ' ring-2 ring-purple-500 ring-offset-2'
+                    ? getTicketStatusClasses(status).combined + ' ring-2 ring-purple-500 ring-offset-2'
                     : 'bg-gray-100 text-gray-500'
                 ]"
               >
+                <i :class="['mr-1', getTicketStatusIcon(status)]"></i>
                 {{ formatTicketStatus(status) }}
               </button>
             </div>
@@ -211,11 +212,13 @@ import Textarea from 'primevue/textarea'
 import ZincButton from '@/components/ZincButton.vue'
 import { createAuthenticatedClient } from '@/api/apiClient'
 import { Ticket, TicketStatus, AddCommentToTicketRequest, EditTicketRequest } from '@/api/apiclients/ZincApiClient'
+import { getTicketStatusClasses, getTicketStatusIcon, formatTicketStatus } from '@/utils/ticketStatus'
 
 const router = useRouter()
 const route = useRoute()
 
 const ticket = ref<Ticket | null>(null)
+const projectName = ref('')
 const projectShorthand = ref('')
 const reporterUsername = ref('')
 const projectKey = ref('')
@@ -263,6 +266,7 @@ async function loadTicket() {
     
     // Store project key for adding comments
     projectKey.value = project.key || ''
+    projectName.value = project.name || ''
     
     // Find the ticket by index
     const foundTicket = project.tickets?.find(t => t.index === ticketIndex)
@@ -293,36 +297,6 @@ async function loadTicket() {
   } finally {
     isLoading.value = false
   }
-}
-
-function formatTicketStatus(status: TicketStatus | undefined): string {
-  if (status === undefined) return 'Unknown'
-  
-  const statusMap: Record<number, string> = {
-    [TicketStatus._0]: 'Unknown',
-    [TicketStatus._1]: 'In Review',
-    [TicketStatus._2]: 'Open',
-    [TicketStatus._3]: 'In Progress',
-    [TicketStatus._4]: 'Complete',
-    [TicketStatus._5]: 'Cancelled'
-  }
-  
-  return statusMap[status] || 'Unknown'
-}
-
-function getStatusClass(status: TicketStatus | undefined): string {
-  if (status === undefined) return 'bg-gray-100 text-gray-700'
-  
-  const classMap: Record<number, string> = {
-    [TicketStatus._0]: 'bg-gray-100 text-gray-700',
-    [TicketStatus._1]: 'bg-yellow-100 text-yellow-700',
-    [TicketStatus._2]: 'bg-blue-100 text-blue-700',
-    [TicketStatus._3]: 'bg-purple-100 text-purple-700',
-    [TicketStatus._4]: 'bg-green-100 text-green-700',
-    [TicketStatus._5]: 'bg-red-100 text-red-700'
-  }
-  
-  return classMap[status] || 'bg-gray-100 text-gray-700'
 }
 
 function formatDate(date: Date | undefined): string {

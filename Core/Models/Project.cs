@@ -52,7 +52,7 @@ public record Project : AggregateRoot
     {
         var validatedObject = (this with
         {
-            EditingToken = DateTime.UtcNow.ToLongDateString()
+            EditingToken = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
         }).Validate();
 
         return new(validatedObject);

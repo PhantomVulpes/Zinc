@@ -5,12 +5,12 @@
         <!-- Description Section -->
         <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-lavender-200 p-8 mb-8">
           <div class="prose prose-lg max-w-none">
-            <h1 class="text-4xl font-bold text-purple-900 mb-6">Zinc</h1>
+            <div class="flex items-center justify-between mb-6">
+              <h1 class="text-4xl font-bold text-purple-900 m-0">Zinc</h1>
+              <img src="/zinc.svg" alt="Zinc" class="w-10 h-10" />
+            </div>
             <p class="text-purple-800 text-lg leading-relaxed mb-4">
-              A beautiful Vue + TypeScript application with Tailwind & PrimeVue.
-            </p>
-            <p class="text-purple-700 leading-relaxed mb-4">
-              Get started by registering a new account and exploring the features Zinc has to offer.
+              Mental speed on tap.
             </p>
           </div>
         </div>
@@ -39,20 +39,16 @@
 
           <!-- Projects List -->
           <div v-if="!isLoadingProjects && projects.length > 0" class="space-y-4">
-            <div
+            <router-link
               v-for="project in projects"
               :key="project.key"
-              class="bg-white rounded-lg border border-lavender-300 p-6 shadow-sm hover:shadow-md transition-shadow"
+              :to="`/projects/${project.shorthand}`"
+              class="block bg-white rounded-lg border border-lavender-300 p-6 shadow-sm hover:shadow-md transition-shadow no-underline"
             >
               <!-- Project Header -->
               <div class="flex items-start justify-between mb-3">
                 <h3 class="text-xl font-bold text-purple-900">
-                  <router-link
-                    :to="`/projects/${project.shorthand}`"
-                    class="hover:text-purple-600 transition-colors cursor-pointer"
-                  >
-                    {{ project.name }} <span class="text-sm text-purple-600">({{ project.shorthand }})</span>
-                  </router-link>
+                  {{ project.name }} <span class="text-sm text-purple-600">({{ project.shorthand }})</span>
                 </h3>
                 <div class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">
                   {{ project.tickets?.length || 0 }} {{ project.tickets?.length === 1 ? 'ticket' : 'tickets' }}
@@ -75,7 +71,7 @@
               <div v-else class="text-purple-500 text-sm italic">
                 No labels
               </div>
-            </div>
+            </router-link>
           </div>
 
           <!-- Empty State -->
@@ -120,7 +116,7 @@ async function loadProjects() {
   try {
     const client = createAuthenticatedClient()
     const result = await client.projectsAll()
-    projects.value = result || []
+    projects.value = (result || []).sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
   } catch (error: any) {
     console.error('Failed to load projects:', error)
     errorMessage.value = 'Failed to load projects. Please try again.'

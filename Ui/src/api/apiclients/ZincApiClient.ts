@@ -526,6 +526,7 @@ export interface ICreateNewProjectRequest {
 export class CreateTicketRequest implements ICreateTicketRequest {
     title?: string | null;
     description?: string | null;
+    labels?: string[] | null;
 
     constructor(data?: ICreateTicketRequest) {
         if (data) {
@@ -540,6 +541,14 @@ export class CreateTicketRequest implements ICreateTicketRequest {
         if (_data) {
             this.title = _data["title"] !== undefined ? _data["title"] : null as any;
             this.description = _data["description"] !== undefined ? _data["description"] : null as any;
+            if (Array.isArray(_data["labels"])) {
+                this.labels = [] as any;
+                for (let item of _data["labels"])
+                    this.labels!.push(item);
+            }
+            else {
+                this.labels = null as any;
+            }
         }
     }
 
@@ -554,6 +563,11 @@ export class CreateTicketRequest implements ICreateTicketRequest {
         data = typeof data === 'object' ? data : {};
         data["title"] = this.title !== undefined ? this.title : null as any;
         data["description"] = this.description !== undefined ? this.description : null as any;
+        if (Array.isArray(this.labels)) {
+            data["labels"] = [];
+            for (let item of this.labels)
+                data["labels"].push(item);
+        }
         return data;
     }
 }
@@ -561,6 +575,7 @@ export class CreateTicketRequest implements ICreateTicketRequest {
 export interface ICreateTicketRequest {
     title?: string | null;
     description?: string | null;
+    labels?: string[] | null;
 }
 
 export class EditTicketRequest implements IEditTicketRequest {
