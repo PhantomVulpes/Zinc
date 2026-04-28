@@ -100,7 +100,7 @@
             </div>
             <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
               <div class="text-sm text-purple-600 font-medium mb-1">Project Status</div>
-              <Dropdown
+              <Select
                 v-if="isEditMode"
                 v-model="editedStatus"
                 :options="projectStatusOptions"
@@ -112,7 +112,7 @@
             </div>
             <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
               <div class="text-sm text-purple-600 font-medium mb-1">Default Ticket Status</div>
-              <Dropdown
+              <Select
                 v-if="isEditMode"
                 v-model="editedDefaultTicketStatus"
                 :options="ticketStatusOptions"
@@ -205,7 +205,7 @@ import { useRouter, useRoute } from 'vue-router'
 import Message from 'primevue/message'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
-import Dropdown from 'primevue/dropdown'
+import Select from 'primevue/select'
 import ZincButton from '@/components/ZincButton.vue'
 import { createAuthenticatedClient } from '@/api/apiClient'
 import { Project, ProjectStatus, TicketStatus, EditProjectRequest } from '@/api/apiclients/ZincApiClient'

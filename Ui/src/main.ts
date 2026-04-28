@@ -3,12 +3,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 import PrimeVue from 'primevue/config'
 import 'primeicons/primeicons.css'
 import './style.css'
+import { selectPreset } from './presets/select'
 import App from './App.vue'
 import Home from './views/Home.vue'
 import Register from './views/Register.vue'
 import Login from './views/Login.vue'
 import CreateProject from './views/CreateProject.vue'
-import EditProject from './views/EditProject.vue'
 import ProjectDetail from './views/ProjectDetail.vue'
 import CreateTicket from './views/CreateTicket.vue'
 import TicketDetail from './views/TicketDetail.vue'
@@ -37,11 +37,6 @@ const router = createRouter({
       component: CreateProject
     },
     {
-      path: '/projects/:projectShorthand/edit',
-      name: 'EditProject',
-      component: EditProject
-    },
-    {
       path: '/projects/:projectShorthand',
       name: 'ProjectDetail',
       component: ProjectDetail
@@ -62,6 +57,9 @@ const router = createRouter({
 createApp(App)
   .use(router)
   .use(PrimeVue, {
-    unstyled: true
+    unstyled: true,
+    pt: {
+      select: selectPreset
+    }
   })
   .mount('#app')
