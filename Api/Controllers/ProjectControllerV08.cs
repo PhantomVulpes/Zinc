@@ -7,12 +7,16 @@ using Vulpes.Zinc.Core.Queries;
 
 namespace Vulpes.Zinc.Api.Controllers;
 
-[ApiVersion("0.7")]
-public class ProjectController : ZincController
+/// <summary>
+/// Project controller for API v0.8 (in development)
+/// This is where you add new features and breaking changes
+/// </summary>
+[ApiVersion("0.8")]
+public class ProjectControllerV08 : ZincController
 {
     private readonly IMediator mediator;
 
-    public ProjectController(IMediator mediator)
+    public ProjectControllerV08(IMediator mediator)
     {
         this.mediator = mediator;
     }
@@ -31,6 +35,9 @@ public class ProjectController : ZincController
     [ProducesResponseType(typeof(IEnumerable<Project>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Project>>> GetAllAccessibleProjectsAsync()
     {
+        // TODO: In v0.8, you could add pagination, filtering, etc.
+        // Example: Add [FromQuery] int page = 1, [FromQuery] int pageSize = 20
+
         var projects = await mediator.RequestResponseAsync(new GetAllAccessibleProjectsQuery(RegisteredUser.Key));
         return Ok(projects);
     }
@@ -78,4 +85,13 @@ public class ProjectController : ZincController
 
         return Ok();
     }
+
+    // Example: Add a new v0.8-only endpoint
+    // [HttpGet("projects/stats")]
+    // [ProducesResponseType(typeof(ProjectStats), StatusCodes.Status200OK)]
+    // public async Task<ActionResult<ProjectStats>> GetProjectStatsAsync()
+    // {
+    //     // New feature only in v0.8
+    //     return Ok(new ProjectStats());
+    // }
 }

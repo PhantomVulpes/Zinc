@@ -6,7 +6,7 @@ using Vulpes.Zinc.Core.Models;
 namespace Vulpes.Zinc.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Authorize]
 public abstract class ZincController : ControllerBase
 {

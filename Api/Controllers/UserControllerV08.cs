@@ -6,18 +6,20 @@ using Vulpes.Zinc.Api.Requests;
 using Vulpes.Zinc.Api.Responses;
 using Vulpes.Zinc.Api.Services;
 using Vulpes.Zinc.Core.Commands;
-using Vulpes.Zinc.Core.Models;
-using Vulpes.Zinc.Core.Queries;
 
 namespace Vulpes.Zinc.Api.Controllers;
 
-[ApiVersion("0.7")]
-public class UserController : ZincController
+/// <summary>
+/// User controller for API v0.8 (in development)
+/// This is where you add new features and breaking changes
+/// </summary>
+[ApiVersion("0.8")]
+public class UserControllerV08 : ZincController
 {
     private readonly IMediator mediator;
     private readonly IJwtTokenService jwtTokenService;
 
-    public UserController(IMediator mediator, IJwtTokenService jwtTokenService)
+    public UserControllerV08(IMediator mediator, IJwtTokenService jwtTokenService)
     {
         this.mediator = mediator;
         this.jwtTokenService = jwtTokenService;
@@ -51,11 +53,12 @@ public class UserController : ZincController
         return Ok(response);
     }
 
-    [HttpGet("user/{userKey}")]
-    [ProducesResponseType(typeof(RegisteredUser), StatusCodes.Status200OK)]
-    public async Task<ActionResult<RegisteredUser>> GetUserByKeyAsync(Guid userKey)
-    {
-        var user = await mediator.RequestResponseAsync(new GetUserByKeyQuery(userKey));
-        return Ok(user);
-    }
+    // Example: Add new v0.8-only endpoint
+    // [HttpGet("profile")]
+    // [ProducesResponseType(typeof(UserProfile), StatusCodes.Status200OK)]
+    // public async Task<ActionResult<UserProfile>> GetUserProfileAsync()
+    // {
+    //     // New feature only in v0.8
+    //     return Ok(new UserProfile());
+    // }
 }

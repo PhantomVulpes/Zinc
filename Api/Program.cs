@@ -1,3 +1,5 @@
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Extensions.FileProviders;
@@ -71,19 +73,46 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Add API Versioning
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(0, 7);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
+        new HeaderApiVersionReader("X-Api-Version"));
+})
+.AddMvc()
+.AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
 // Add services to the container.
 builder.Services.AddControllers(options =>
 {
     options.Conventions.Add(new RouteTokenTransformerConvention(new LowercaseParameterTransformer()));
 });
 builder.Services.AddEndpointsApiExplorer();
+
+// Configure Swagger to support API versioning
 builder.Services.AddSwaggerGen(options =>
 {
-    var version = ApplicationConfiguration.Version;
-    options.SwaggerDoc(version, new OpenApiInfo
+    // Create a Swagger document for each discovered API version
+    options.SwaggerDoc("v0.7", new OpenApiInfo
     {
         Title = "Zinc API",
-        Version = version
+        Version = "v0.7",
+        Description = "Current stable version"
+    });
+
+    options.SwaggerDoc("v0.8", new OpenApiInfo
+    {
+        Title = "Zinc API",
+        Version = "v0.8",
+        Description = "Next version (in development)"
     });
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -126,9 +155,12 @@ _ = builder.Services
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-var version = ApplicationConfiguration.Version;
 app.UseSwagger();
-app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"Zinc API {version}"));
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v0.7/swagger.json", "Zinc API v0.7");
+    options.SwaggerEndpoint("/swagger/v0.8/swagger.json", "Zinc API v0.8");
+});
 
 // Serve static files from UI dist folder
 var uiDistPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "Ui", "dist");
