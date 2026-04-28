@@ -2,15 +2,45 @@
   <div class="min-h-screen">
     <div class="container mx-auto px-4 py-12">
       <div class="max-w-4xl mx-auto">
-        <!-- Back Button -->
-        <ZincButton
-          label="Back to Projects"
-          icon="pi pi-arrow-left"
-          severity="secondary"
-          @click="router.push('/')"
-          class="mb-6"
-          text
-        />
+        <!-- Back Button and Edit Controls -->
+        <div class="flex items-center justify-between mb-6">
+          <ZincButton
+            label="Back to Projects"
+            icon="pi pi-arrow-left"
+            severity="secondary"
+            @click="router.push('/')"
+            text
+          />
+          
+          <!-- Edit/Cancel/Save Buttons -->
+          <div v-if="!isLoading && project" class="flex gap-2">
+            <ZincButton
+              v-if="!isEditMode"
+              icon="pi pi-pencil"
+              @click="enterEditMode"
+              severity="secondary"
+              text
+              class="!p-1"
+            />
+            <ZincButton
+              v-if="isEditMode"
+              icon="pi pi-times"
+              severity="secondary"
+              @click="cancelEdit"
+              :disabled="isSubmitting"
+              class="!p-1"
+            />
+            <ZincButton
+              v-if="isEditMode"
+              icon="pi pi-check"
+              @click="saveEdit"
+              :loading="isSubmitting"
+              :disabled="isSubmitting"
+              severity="primary"
+              class="!p-1"
+            />
+          </div>
+        </div>
 
         <!-- Loading State -->
         <div v-if="isLoading" class="flex justify-center py-12">
@@ -26,57 +56,18 @@
         <div v-if="!isLoading && project" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-lavender-200 p-8">
           <!-- Project Header -->
           <div class="mb-6">
-            <div class="flex items-start justify-between mb-4">
-              <div class="flex-1">
-                <!-- Name (editable or display) -->
-                <div v-if="isEditMode" class="mb-4">
-                  <label class="block text-sm font-medium text-purple-900 mb-2">Project Name</label>
-                  <InputText
-                    v-model="editedName"
-                    class="w-full text-3xl font-bold p-3 border border-lavender-300 rounded-lg"
-                    placeholder="Project name"
-                  />
-                </div>
-                <h1 v-else class="text-4xl font-bold text-purple-900 mb-2">
-                  {{ project.name }} <span class="text-2xl text-purple-600">({{ project.shorthand }})</span>
-                </h1>
-              </div>
-              
-              <!-- Edit/Cancel/Save and Create Ticket Buttons -->
-              <div class="flex gap-2">
-                <ZincButton
-                  v-if="!isEditMode"
-                  label="Edit"
-                  icon="pi pi-pencil"
-                  @click="enterEditMode"
-                  severity="secondary"
-                />
-                <ZincButton
-                  v-if="isEditMode"
-                  label="Cancel"
-                  icon="pi pi-times"
-                  severity="secondary"
-                  @click="cancelEdit"
-                  :disabled="isSubmitting"
-                />
-                <ZincButton
-                  v-if="isEditMode"
-                  label="Save"
-                  icon="pi pi-check"
-                  @click="saveEdit"
-                  :loading="isSubmitting"
-                  :disabled="isSubmitting"
-                  severity="primary"
-                />
-                <ZincButton
-                  v-if="!isEditMode"
-                  label="Create Ticket"
-                  icon="pi pi-plus"
-                  severity="primary"
-                  @click="router.push(`/projects/${project.shorthand}/create-ticket`)"
-                />
-              </div>
+            <!-- Name (editable or display) -->
+            <div v-if="isEditMode" class="mb-4">
+              <label class="block text-sm font-medium text-purple-900 mb-2">Project Name</label>
+              <InputText
+                v-model="editedName"
+                class="w-full text-3xl font-bold p-3 border border-lavender-300 rounded-lg"
+                placeholder="Project name"
+              />
             </div>
+            <h1 v-else class="text-4xl font-bold text-purple-900 mb-2">
+              {{ project.name }} <span class="text-2xl text-purple-600">({{ project.shorthand }})</span>
+            </h1>
           </div>
 
           <!-- Description -->
@@ -155,9 +146,18 @@
           </div>
 
           <!-- Tickets Section -->
-          <div v-if="project.tickets && project.tickets.length > 0" class="mt-8">
-            <h2 class="text-xl font-semibold text-purple-900 mb-4">Tickets</h2>
-            <div class="space-y-3">
+          <div class="mt-8">
+            <div class="flex items-center gap-2 mb-4">
+              <ZincButton
+                v-if="!isEditMode"
+                icon="pi pi-plus"
+                severity="primary"
+                @click="router.push(`/projects/${project.shorthand}/create-ticket`)"
+                class="!p-1"
+              />
+              <h2 class="text-xl font-semibold text-purple-900">Tickets</h2>
+            </div>
+            <div v-if="project.tickets && project.tickets.length > 0" class="space-y-3">
               <router-link
                 v-for="(ticket, index) in sortedTickets"
                 :key="ticket.index ?? index"
@@ -192,6 +192,7 @@
                 </div>
               </router-link>
             </div>
+            <p v-else class="text-purple-500 italic">No tickets yet</p>
           </div>
         </div>
       </div>
