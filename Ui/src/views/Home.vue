@@ -71,6 +71,28 @@
               <div v-else class="text-purple-500 text-sm italic">
                 No labels
               </div>
+
+              <!-- Ticket Status Counts -->
+              <div v-if="project.tickets && project.tickets.length > 0" class="flex flex-wrap gap-2 mt-3">
+                <template v-for="statusType in [
+                  { status: TicketStatus._3, count: getTicketStatusCounts(project).inProgress },
+                  { status: TicketStatus._1, count: getTicketStatusCounts(project).inReview },
+                  { status: TicketStatus._2, count: getTicketStatusCounts(project).open },
+                  { status: TicketStatus._4, count: getTicketStatusCounts(project).complete },
+                  { status: TicketStatus._5, count: getTicketStatusCounts(project).cancelled }
+                ]" :key="statusType.status">
+                  <span
+                    v-if="statusType.count > 0"
+                    :class="[
+                      'px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1',
+                      getTicketStatusClasses(statusType.status).combined
+                    ]"
+                  >
+                    <i :class="getTicketStatusIcon(statusType.status)"></i>
+                    <span>{{ statusType.count }} {{ statusType.count === 1 ? 'ticket' : 'tickets' }}</span>
+                  </span>
+                </template>
+              </div>
             </router-link>
           </div>
 
@@ -96,7 +118,8 @@ import Message from 'primevue/message'
 import ZincButton from '@/components/ZincButton.vue'
 import { useAuth } from '@/services/auth'
 import { createAuthenticatedClient } from '@/api/apiClient'
-import { Project } from '@/api/apiclients/ZincApiClient'
+import { Project, TicketStatus } from '@/api/apiclients/ZincApiClient'
+import { getTicketStatusClasses, getTicketStatusIcon } from '@/utils/ticketStatus'
 
 const router = useRouter()
 const { isAuthenticated } = useAuth()
@@ -104,6 +127,47 @@ const { isAuthenticated } = useAuth()
 const projects = ref<Project[]>([])
 const isLoadingProjects = ref(false)
 const errorMessage = ref('')
+
+function getTicketStatusCounts(project: Project) {
+  if (!project.tickets) return {
+    inReview: 0,
+    open: 0,
+    inProgress: 0,
+    complete: 0,
+    cancelled: 0
+  }
+  
+  const counts = {
+    inReview: 0,
+    open: 0,
+    inProgress: 0,
+    complete: 0,
+    cancelled: 0
+  }
+  
+  project.tickets.forEach(ticket => {
+    const status = ticket.status ?? TicketStatus._0
+    switch (status) {
+      case TicketStatus._1:
+        counts.inReview++
+        break
+      case TicketStatus._2:
+        counts.open++
+        break
+      case TicketStatus._3:
+        counts.inProgress++
+        break
+      case TicketStatus._4:
+        counts.complete++
+        break
+      case TicketStatus._5:
+        counts.cancelled++
+        break
+    }
+  })
+  
+  return counts
+}
 
 async function loadProjects() {
   if (!isAuthenticated.value) {
